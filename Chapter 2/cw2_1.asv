@@ -54,18 +54,16 @@ M = 1; % 1 realisation
 N = 1000; % 1000 samples per realisation
 
 x = randn(M,N);
+
 y = filter(ones(1,9), [1], x);
+
 y_corr = xcorr(y, 'unbiased');
 
-% plot
-tau_zoomed = -20:20;
-y_corr_zoomed = y_corr(-20+1000:20+1000);
-
 figure;
-stem(tau_zoomed, y_corr_zoomed, 'filled'); % Scatter plot with indices on the x-axis
+plot(tau, x_corr_small); % Scatter plot with indices on the x-axis
 xlabel('Sample number', FontSize=15); % Label for x-axis
 ylabel('Value ', FontSize=15); % Label for y-axis
-title('ACF of y'); % Title for the plot
+title('xcorr of Gaussian Noise: Zoomed in'); % Title for the plot
 grid on; % Enable grid for better visibility
 fontsize("scale", 1.5)
 
