@@ -3,13 +3,13 @@
 %% Question 1
 x = rand(1,1000);
 
-figure; % Create a new figure
-scatter(1:1000, x, 'filled'); % Scatter plot with indices on the x-axis
-xlabel('Sample number', FontSize=15); % Label for x-axis
-ylabel('Value ', FontSize=15); % Label for y-axis
-% title(''); % Title for the plot
-grid on; % Enable grid for better visibility
-fontsize("scale", 1.5)
+% figure; % Create a new figure
+% scatter(1:1000, x, 'filled'); % Scatter plot with indices on the x-axis
+% xlabel('Sample number', FontSize=15); % Label for x-axis
+% ylabel('Value ', FontSize=15); % Label for y-axis
+% % title(''); % Title for the plot
+% grid on; % Enable grid for better visibility
+% fontsize("scale", 1.5)
 
 
 %%
@@ -236,18 +236,7 @@ for i = 1:4
 end
 
 %% Question 5
-% plot
-x = randn(1,1000);
 
-figure; % Create a new figure
-scatter(1:1000, x, 'filled'); % Scatter plot with indices on the x-axis
-xlabel('Sample number', FontSize=15); % Label for x-axis
-ylabel('Value ', FontSize=15); % Label for y-axis
-% title(''); % Title for the plot
-grid on; % Enable grid for better visibility
-fontsize("scale", 1.5)
-
-%%
 x = randn(1,1000);
 
 % standard normal distribution parameters
