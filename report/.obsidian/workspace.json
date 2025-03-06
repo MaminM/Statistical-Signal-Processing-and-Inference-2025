@@ -78,7 +78,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "cb35f2370a56f8b7",
@@ -170,8 +171,11 @@
   },
   "active": "fb8bfc6c2eaae684",
   "lastOpenFiles": [
-    "Welcome.md",
+    "part2_1_q2_large.png",
+    "part2_1_q2_small.png",
+    "part2_1_q1.png",
     "Report.md",
+    "Welcome.md",
     "random_processes_means_with_theory.jpg",
     "Pasted image 20250214174506.png",
     "Pasted image 20250214174400.png",
@@ -179,8 +183,6 @@
     "Pasted image 20250213192354.png",
     "Pasted image 20250130095010.png",
     "Pasted image 20250129093727.png",
-    "Pasted image 20250129092559.png",
-    "Pasted image 20250129092417.png",
-    "Pasted image 20250129092139.png"
+    "Pasted image 20250129092559.png"
   ]
 }
