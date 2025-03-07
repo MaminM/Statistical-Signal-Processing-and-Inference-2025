@@ -22,6 +22,18 @@
             }
           },
           {
+            "id": "ed22f41595e1f198",
+            "type": "leaf",
+            "state": {
+              "type": "image",
+              "state": {
+                "file": "part2_3_q_1.png"
+              },
+              "icon": "lucide-image",
+              "title": "part2_3_q_1"
+            }
+          },
+          {
             "id": "320a9622a3452430",
             "type": "leaf",
             "state": {
@@ -35,7 +47,8 @@
               "title": "Important Facts I forget"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -92,8 +105,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "cb35f2370a56f8b7",
@@ -183,12 +195,12 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "fb8bfc6c2eaae684",
+  "active": "ed22f41595e1f198",
   "lastOpenFiles": [
+    "Report.md",
     "part2_3_q_1.png",
     "trial.png",
     "Important Facts I forget.md",
-    "Report.md",
     "Pasted image 20250307114729.png",
     "part2_1_q2_large.png",
     "part2_1_q2_small.png",
@@ -197,7 +209,6 @@
     "random_processes_means_with_theory.jpg",
     "Pasted image 20250214174506.png",
     "Pasted image 20250214174400.png",
-    "Pasted image 20250214114945.png",
-    "Pasted image 20250213192354.png"
+    "Pasted image 20250214114945.png"
   ]
 }

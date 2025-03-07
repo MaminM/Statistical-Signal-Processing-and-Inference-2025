@@ -25,6 +25,15 @@ a1_correct = [];
 a2_correct = [];
 a1_err = [];
 a2_err = [];
+% false pos, false neg, true pos, true neg
+a1_true_pos = [];
+a2_true_pos = [];
+a1_true_neg = [];
+a2_true_neg = [];
+a1_false_pos = [];
+a2_false_pos = [];
+a1_false_neg = [];
+a2_false_neg = [];
 
 for i = 1:K
     % extract this iterations coefficient
@@ -47,6 +56,8 @@ for i = 1:K
         a1_theory_div = [a1_theory_div, a1];
         a2_theory_div = [a2_theory_div, a2];
     end
+    % not all roots are inside
+    % but maybe
     
     % do majority vote on covergence
     converges = 0;
@@ -57,12 +68,12 @@ for i = 1:K
         % assume x(1) = randn; x(2) = randn
         % the choice of initial value may introduce a transient
         % this implies that we must consider stability of this transient
-        if true
+        if false
            x_initial = zeros(1,2); 
-           title_str = 'x(1) = x(2) = 0'
+           title_str = 'x(1) = x(2) = 0';
         else
            x_initial = randn(1,2); 
-           title_str = 'x(1) = x(2) = randn'
+           title_str = 'x(1) = x(2) = randn';
         end
     
         x = [x_initial , zeros(1,N-2)];
@@ -109,6 +120,23 @@ for i = 1:K
         a1_err = [a1_err, a1];
         a2_err = [a2_err, a2];
     end
+    % true positive
+    if theoretical_converge && converge
+        a1_true_pos = [a1_true_pos, a1];
+        a2_true_pos = [a2_true_pos, a2];
+    % true negative
+    elseif not(theoretical_converge) && not(converge)
+        a1_true_neg = [a1_true_neg, a1];
+        a2_true_neg = [a2_true_neg, a2];
+    % false positive - predict converge when it diverged
+    elseif theoretical_converge && not(converge)
+        a1_false_pos = [a1_false_pos, a1];
+        a2_false_pos = [a2_false_pos, a2];
+    elseif not(theoretical_converge) && converge
+    % false negative - predict diverge when it converged
+        a1_false_neg = [a1_false_neg, a1];
+        a2_false_neg = [a2_false_neg, a2];
+    end
 
 end
 
@@ -119,6 +147,8 @@ hold on
 scatter(a2_diverge, a1_diverge, 'red', 'o')
 scatter(a2_theory_conv, a1_theory_conv, 'blue', 'x')
 scatter(a2_theory_div, a1_theory_div, 'red', 'x')
+xlabel('a2')
+ylabel('a1')
 legend('Converge', 'Diverge', 'Theoretical Convergence', 'Theoretical Divergence')
 title(['Measured Results: ',title_str])
 
@@ -127,6 +157,8 @@ figure;
 scatter(a2_theory_conv, a1_theory_conv, 'blue', 'x')
 hold on
 scatter(a2_theory_div, a1_theory_div, 'red', 'x')
+xlabel('a2')
+ylabel('a1')
 legend('Converge', 'Diverge')
 title(['Theoretical Convergence Results: ',title_str])
 
@@ -140,7 +172,20 @@ hold on
 scatter(a2_correct, a1_correct, '.', 'MarkerEdgeColor', soft_blue_hex)
 legend('Error', 'Correct')
 legend('Converge', 'Diverge')
+xlabel('a2')
+ylabel('a1')
 title(['Errors in convergence prediction: ',title_str])
 
 
+% plot true/false pos/neg
+figure;
+scatter(a2_true_pos, a1_true_pos, "blue", 'o')
+hold on
+scatter(a2_true_neg, a1_true_neg, "blue", 'x')
+scatter(a2_false_pos, a1_false_pos, 'red', 'o')
+scatter(a2_false_neg, a1_false_neg, 'red', 'x')
+legend('true pos', 'true neg', 'false pos', 'false neg')
+xlabel('a2')
+ylabel('a1')
+title(['Errors in convergence prediction: ',title_str])
 
