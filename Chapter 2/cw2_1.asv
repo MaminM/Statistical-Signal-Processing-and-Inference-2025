@@ -43,17 +43,6 @@ title('xcorr of Gaussian Noise: Zoomed out'); % Title for the plot
 grid on; % Enable grid for better visibility
 fontsize("scale", 1.5)
 
-% correcting for the factor 1/(N-|tau|)
-x_corr_large_corrected = x_corr_large .* (N-abs(tau_large));
-
-figure;
-plot(tau_large, x_corr_large_corrected); % Scatter plot with indices on the x-axis
-xlabel('Sample number', FontSize=15); % Label for x-axis
-ylabel('Value ', FontSize=15); % Label for y-axis
-title('xcorr of Gaussian Noise: Zoomed out (Corrected)'); % Title for the plot
-grid on; % Enable grid for better visibility
-fontsize("scale", 1.5)
-
 %% Question 3
 
 % Explain...
@@ -85,5 +74,5 @@ fontsize("scale", 1.5)
 
 % if X_n is an uncorrelated procces
 % then R_X(tau) = delta(tau)
-% and R_Y(tau) = R_X(tau) (convolve) R_h(tau) = R_h(tau)
+% and R_Y(tau) = R_X(tau) * R_h(tau) = R_h(tau)
 % 
