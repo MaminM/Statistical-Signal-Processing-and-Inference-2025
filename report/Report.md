@@ -157,7 +157,8 @@ $$Var(\text{rp}_3(t)) = \mathbb{E}\{\text{rp}_3^2(t)\} - \mathbb{E}\{\text{rp}_3
 
 # Part 2: Linear Stochastic Modelling
 
-## Question 1:
+## 2.1 ACF of uncorrelated and correlated sequences
+### Question 1:
 ![[part2_1_q1.png | 500]]
 
 
@@ -169,7 +170,7 @@ Theoretically the auto-correlation should be a dirac delta
 This is reflected in our estimate.
 
 
-## Question 2:
+### Question 2:
 
 ![[part2_1_q2_small.png]]
 
@@ -213,7 +214,7 @@ $V(\tau)$ increases with $\tau$ however the asymptotic behaviour is such that fo
 
 #QuestionToAsk *this explanation seems bs????*
 
-## Question 3
+### Question 3
 
 The autocorrelation is
 $$R_X(n,s) = \mathbb{E}\{X_nX_s\}$$
@@ -225,3 +226,51 @@ $$\hat R_X(\tau) = \frac{1}{N-|\tau|}\sum_{n=0}^{N-|\tau|-1}x[n]x[n+\tau], \quad
 ==Answer to the question==
 
 empirical bound is 10% larger than the range in the first 50 samples
+
+
+## 2.2 Cross-correlation function
+
+### Question 1
+
+![[Pasted image 20250307114729.png | 500]]
+
+[[Important Facts I forget#Statistical Correlation|Definition of correlation]]
+For a gaussian process $X,$
+$$R_X = E(X(t)X(t-\tau)) = \begin{cases} 1 & \tau=0 \cr 0 & \tau\neq 0 \end{cases} = \delta(\tau)$$
+The CCF can be found
+$$R_{XY}(\tau) = h(\tau)\ *\ \delta(\tau)$$
+using the filtering property: 
+$$R_{XY} = h(\tau)\ *\ \delta(\tau) = \int h(u) \delta(\tau - u) du = h(\tau)$$
+### Question 2
+The CCF and ACF can be used in system identification to find the impulse response of a system. Primitive steps to do so are as follows:
+- **Excite system** with controlled input (e.g., white noise).
+- **Measure output response**.
+- **Compute cross-correlation (CCF)** between input and output.
+- **Compute autocorrelation (ACF)** of input.
+- **Impulse response** $h[k]$ is proportional to CCF if input is white noise $(R_{XY}[k]∝ h[k]R_{XY}​[k]∝ h[k])$.
+- **Unbiased estimator** under ideal conditions (white noise, no measurement noise).
+
+#### The effect of filter length on the shape of the CCF of  `y`
+
+The higher the filter order, the longer, in time, that the CCF "pulse" is present for.
+The shape becomes more sinusoidal
+![[trial.png]]
+
+
+
+### Question 3
+
+Stability analysis would require that one investigates the roots of the characteristic polynomial.
+For the random process:
+$$x[n] = a_1x[n-1] + a_2x[n-2] + w[n]$$
+The characteristic equation becomes:
+$$1 - a_1z^{-1}-a_2z^{-2} =0$$
+For stability, the **all the roots must exist within the unit circle of the z-plane**
+This is done in the code, file `cw2_3.m`, line 34-49. In particular
+```
+a = [1, -a1, -a2];
+z = roots(a);
+theoretical_convergence = all(abs(z) < 1);
+```
+
+![[part2_3_q_1.png]]

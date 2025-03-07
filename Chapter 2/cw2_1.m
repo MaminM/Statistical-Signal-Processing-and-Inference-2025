@@ -1,5 +1,7 @@
 %% Question 1
-
+clc
+close all
+clear all
 % generate white gaussian noise
 N = 1000; % 1000-samples per realisation
 M = 1; % 1 realisation
