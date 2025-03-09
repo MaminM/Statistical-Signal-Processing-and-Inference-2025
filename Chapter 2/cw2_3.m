@@ -3,7 +3,7 @@ clc
 close all
 clear all
 
-K = 1000; % number of random coeffs
+K = 500; % number of random coeffs
 a1_list = rand(1,K)*5 - 2.5;
 a2_list = rand(1,K)*3 - 1.5;
 N = 1000; % length of x

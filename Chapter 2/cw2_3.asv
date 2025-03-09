@@ -3,7 +3,7 @@ clc
 close all
 clear all
 
-K = 1000; % number of random coeffs
+K = ; % number of random coeffs
 a1_list = rand(1,K)*5 - 2.5;
 a2_list = rand(1,K)*3 - 1.5;
 N = 1000; % length of x
@@ -30,7 +30,6 @@ a1_true_pos = [];
 a2_true_pos = [];
 a1_true_neg = [];
 a2_true_neg = [];
-
 a1_false_pos = [];
 a2_false_pos = [];
 a1_false_neg = [];
@@ -69,7 +68,7 @@ for i = 1:K
         % assume x(1) = randn; x(2) = randn
         % the choice of initial value may introduce a transient
         % this implies that we must consider stability of this transient
-        if true
+        if false
            x_initial = zeros(1,2); 
            title_str = 'x(1) = x(2) = 0';
         else
@@ -178,14 +177,14 @@ ylabel('a1')
 title(['Errors in convergence prediction: ',title_str])
 
 
-
 % plot true/false pos/neg
 figure;
-scatter(a1_true, a1_err, 100, '.', 'MarkerEdgeColor', gray_hex)
+scatter(a2_true_pos, a1_true_pos, "blue", 'o')
 hold on
-scatter(a2_correct, a1_correct, '.', 'MarkerEdgeColor', soft_blue_hex)
-legend('Error', 'Correct')
-legend('Converge', 'Diverge')
+scatter(a2_true_neg, a1_true_neg, "blue", 'x')
+scatter(a2_false_pos, a1_false_pos, 'red', 'o')
+scatter(a2_false_neg, a1_false_neg, 'red', 'x')
+legend('true pos', 'true neg', 'false pos', 'false neg')
 xlabel('a2')
 ylabel('a1')
 title(['Errors in convergence prediction: ',title_str])

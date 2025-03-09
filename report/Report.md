@@ -257,8 +257,8 @@ The shape becomes more sinusoidal
 ![[trial.png]]
 
 
-
-### Question 3
+## 2.3 Autoregressive Modelling
+### Question 1
 
 Stability analysis would require that one investigates the roots of the characteristic polynomial.
 For the random process:
@@ -274,3 +274,16 @@ theoretical_convergence = all(abs(z) < 1);
 ```
 
 ![[part2_3_q_1.png]]
+
+
+### Question 2
+
+$N=5$, the ACF looks erratic, no clear structure reveals itself
+$N=20$, the ACF starts to show more structure, but still noisy
+$N=250$, the ACF reveals it's true pattern
+
+**The effect of the mean** on the autocorrelation function is to artificially inflate it's value for larger lags.  
+![[part2_3_q_2.png]]
+
+### Question 3 - Yule-Walker Equations
+
