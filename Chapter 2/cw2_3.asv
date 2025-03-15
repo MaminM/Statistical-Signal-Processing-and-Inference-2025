@@ -260,7 +260,7 @@ OFFSET = (length(data) - 1)/2;
 
 % storing output coefficients - a's
 a_matrix = zeros(MAX_MODEL_ORDER,MAX_MODEL_ORDER);
-% aryule_matrix = zeros(MAX_MODEL_ORDER, MAX_MODEL_ORDER);
+aryule_matrix = zeros(MAX_MODEL_ORDER, MAX_MODEL_ORDER);
 
 % storing the ACFs 
 LENGTH_OF_ACFs = 575;
