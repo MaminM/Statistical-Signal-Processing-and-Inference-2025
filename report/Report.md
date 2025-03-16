@@ -83,13 +83,7 @@ Both the sample mean and the sample standard deviation are unbiased estimators o
 More samples is always better
 The number of bins affect how complex our pdf can be. We must pick the number of bins in accordance to the number of samples we have as to minimise variance.
 
-
-
-
-
-
-<div style="page-break-after: always;"></div>
-
+`<div style="page-break-after: always;"></div>`
 
 ## 1.2 Stochastic Processes
 
@@ -253,7 +247,7 @@ The CCF and ACF can be used in system identification to find the impulse respons
 #### The effect of filter length on the shape of the CCF of  `y`
 
 The higher the filter order, the longer, in time, that the CCF "pulse" is present for.
-The shape becomes more sinusoidal
+The shape becomes more sinusoidal ==*why is that?*==
 ![[trial.png]]
 
 

@@ -226,7 +226,7 @@ sunspot_data_zero_mean_ACF = xcorr(sunspot_data_zero_mean, 'unbiased');
 
 % lag of 5, 20 and 250
 lengths = [5, 20, 250];
-
+w
 for i=1:length(lengths)
     
     L = lengths(i);
@@ -364,7 +364,8 @@ clc
 load sunspot.dat
 
 ss = sunspot(:, 2); % shape is 288x1
-ss_ACF = xcorr(ss, 'unbiased'); % shape is 575x1
+ss_zero_mean = ss - mean(ss);
+ss_ACF = xcorr(ss_zero_mean, 'unbiased'); % shape is 575x1
 
 % Calculate and plot the PSD using FFT of the autocorrelation function
 N = length(ss);

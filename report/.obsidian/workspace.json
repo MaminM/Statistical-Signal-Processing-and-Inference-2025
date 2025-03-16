@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Report.md",
+                "file": "Important Facts I forget.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Report"
+              "title": "Important Facts I forget"
             }
           },
           {
@@ -72,7 +72,7 @@
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
-              "title": "File explorer"
+              "title": "Files"
             }
           },
           {
@@ -106,8 +106,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300,
-    "collapsed": true
+    "width": 300
   },
   "right": {
     "id": "cb35f2370a56f8b7",
@@ -189,7 +188,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "daily-notes:Open today's note": false,
+      "daily-notes:Open today's daily note": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -199,19 +198,19 @@
   },
   "active": "fb8bfc6c2eaae684",
   "lastOpenFiles": [
-    "part2_3_q_2.png",
-    "part2_3_q_1.png",
-    "Report.md",
     "trial.png",
-    "Important Facts I forget.md",
+    "Report.md",
+    "random_processes_means_with_theory.jpg",
     "Pasted image 20250307114729.png",
-    "part2_1_q2_large.png",
+    "part2_3_q_2.png",
+    "Pasted image 20250129091920.png",
+    "part2_3_q_1.png",
     "part2_1_q2_small.png",
     "part2_1_q1.png",
-    "Welcome.md",
-    "random_processes_means_with_theory.jpg",
-    "Pasted image 20250214174506.png",
-    "Pasted image 20250214174400.png",
-    "Pasted image 20250214114945.png"
+    "part_2_2_q1_ccf.png",
+    "Pasted image 20250129092122.png",
+    "Pasted image 20250129092139.png",
+    "Important Facts I forget.md",
+    "Welcome.md"
   ]
 }
