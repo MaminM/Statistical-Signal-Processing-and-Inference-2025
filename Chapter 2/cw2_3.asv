@@ -421,24 +421,25 @@ figure;
 hold on;
 
 % Plot scaled PACF with stem plot
-stem(1:length(pacf), pacf, 'b', 'LineWidth', 1, 'DisplayName','original'); % Blue, thinner, dashed
+stem(1:length(pacf), pacf, 'b', 'LineWidth', 1, 'Label); % Blue, thinner, dashed
 % zero mean, unit variance
-stem(1:length(pacf_scaled), pacf_scaled, 'k', 'LineWidth', 1.5, 'DisplayName', '$\mu = 0$, $\sigma = 1$');
+stem(1:length(pacf_scaled), pacf_scaled, 'k', 'LineWidth', 1.5);
 
 
-% Plot confidence intervals (hide from legend)
-plot(0:length(pacf_scaled)+1, ones(1, length(pacf_scaled)+2) * (1.96 / sqrt(288)), 'Color', 'red', 'LineStyle', '--', 'HandleVisibility', 'off');
-plot(0:length(pacf_scaled)+1, ones(1, length(pacf_scaled)+2) * -(1.96 / sqrt(288)), 'Color', 'red', 'LineStyle', '--', 'HandleVisibility', 'off');
+% Plot confidence intervals
+plot(1:length(pacf_scaled), ones(1, length(pacf_scaled)) * (1.96 / sqrt(288)), 'Color', 'red', 'LineStyle', '--');
+plot(1:length(pacf_scaled), ones(1, length(pacf_scaled)) * -(1.96 / sqrt(288)), 'Color', 'red', 'LineStyle', '--');
 
 % Grid and labels
 grid on;
 xlabel('tau');
 ylabel('Amplitude');
 title('Partial Autocorrelation Function | Zero mean, unit variance');
-legend('Interpreter', 'latex');
 
 % Adjust x-axis limits
-xlim([0, length(pacf_scaled) + 1]);
+xlim([0.5, length(pacf_scaled) + 0.5]);
+% add red lines for confidence interval of 95%
+% +-1.96/root(N)
 
 %% Question 4
 
