@@ -344,88 +344,44 @@ grid on;
 ss_scaled = zscore(ss_data);
 ss_scaled_ACF = xcorr(ss_scaled, 'unbiased');
 
-% calculate PSD
-
-
-
-
-%% plot the PSD of YW overlayed onto data PSD
-% N = 1024;
-% w = wgn(N,1,1);
-% a = [2.2137, -2.9403, 2.1697, -0.9606]; % Coefficients of AR(4) process
-% a = [1 -a];
-% x = filter(1,a,w);
-
-p = 2; % AR model order
-N = length(sunspot_data); % Length of the data
-
-% Empirical PSD from ACF
-dft = fft(sunspot_ACF); % Compute DFT of the ACF
-EmpPSD = abs(dft / length(dft)).^2; % Empirical PSD
-
-% a = aryule_matrix(p, 1:p+1);
-% ThePSD = abs(freqz(1,a,N,1)).^ 2 ; % Theoretical PSD obtained from model
-
-f = linspace(0, 1, length(EmpPSD));
-
-% PLOT THE PSDDD !!!!!
-figure;
-plot(f, EmpPSD', 'b', 'LineWidth', 1.5);
-title('Empirical PSD from ACF');
-xlabel('Normalized Frequency');
-ylabel('PSD');
-grid on;
 
 
 
 
         
-%% 
+%% Question 3 - Attempt 2, from Lec 2, slide 44
 clear all 
 close all 
 clc
 
 load sunspot.dat
+ss_data = sunspot(:, 2);
+ss_data = ss_data - mean(ss_data);
+ss_data_ACF = xcorr(ss_data, 'unbiased');
 
-ss = sunspot(:, 2); % shape is 288x1
-ss_zero_mean = ss - mean(ss);
-ss_ACF = xcorr(ss_zero_mean, 'unbiased'); % shape is 575x1
+% Finding Yule Walker Coefficients
+data = ss_data_ACF;
 
-% Calculate and plot the PSD using FFT of the autocorrelation function
-N = length(ss);
-L = 2*N-1; % Length of the ACF
-fs = 1; % Assuming 1 sample per year for sunspot data
+MAX_MODEL_ORDER = 10; 
+OFFSET = (length(data) - 1)/2;
 
-% Compute the PSD using FFT of the ACF (Wiener-Khinchin theorem)
-ss_PSD = fft(ss_ACF);
-ss_PSD = abs(ss_PSD(1:floor(L/2)+1));
-ss_PSD = ss_PSD/L; % Normalize by signal length
+% storing output coefficients - a's
+a_matrix = zeros(MAX_MODEL_ORDER,MAX_MODEL_ORDER);
+% aryule_matrix = zeros(MAX_MODEL_ORDER, MAX_MODEL_ORDER);
 
-% % Create frequency vector
-f = (0:floor(L/2))*fs/L;
+% storing the ACFs 
+LENGTH_OF_ACFs = 575;
+ACFs = zeros(LENGTH_OF_ACFs,MAX_MODEL_ORDER);
+for p=1:MAX_MODEL_ORDER
+    [aryule_a,aryule_e] = aryule(data, p);
+    % a_matrix(p, 1:p+1) = aryule_a;
+    a_matrix(p, 1:p) = -1 * aryule_a(2:p+1);
+    
 
-% 
-% % Plot the PSD
-% figure;
-% plot(f, 10*log10(ss_PSD), 'Color', '#000000', 'LineStyle', '--');
-% title('Power Spectral Density of Sunspot Data');
-% xlabel('Frequency (cycles/year)');
-% ylabel('Power/Frequency (dB)');
-% grid on;
+    % % generate data using the coefficients
+    % M = 1;
+    % N = 288;
+    % e = randn(N,M);
+    % x(:, p) = filter(1, aryule_a, e);
 
-% Create normalized angular frequency vector (ω/π)
-omega_norm = f * 2 * pi / fs; % Convert to angular frequency and normalize
-
-% Plot the PSD with black dashed line in dB
-plot(omega_norm, 10*log10(ss_PSD), 'Color', '#000000', 'LineStyle', '--');
-title('Power Spectral Density of Sunspot Data');
-xlabel('Normalized Angular Frequency (ω/π)');
-ylabel('Power/Frequency (dB)');
-grid on;
-
-% % Find the dominant frequency
-% [max_power, max_idx] = max(ss_PSD);
-% dominant_freq = f(max_idx);
-% dominant_period = 1/dominant_freq;
-% fprintf('Dominant frequency: %.4f cycles/year\n', dominant_freq);
-% fprintf('Dominant period: %.1f years\n', dominant_period);
+end
