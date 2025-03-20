@@ -141,6 +141,7 @@ for i = 1:K
 
 end
 
+fnt= 16; % fontsize
 
 figure;
 scatter(a1_converge, a2_converge, 'blue', 'o')
@@ -150,21 +151,22 @@ scatter(a1_theory_conv, a2_theory_conv, 'blue', 'x')
 scatter(a1_theory_div, a2_theory_div, 'red', 'x')
 xlabel('a1')
 ylabel('a2')
-legend('Converge', 'Diverge', 'Theoretical Convergence', 'Theoretical Divergence')
+fontsize(fnt, 'points')
+legend('Converge', 'Diverge', 'Theoretical Convergence', 'Theoretical Divergence', 'fontsize', 10)
 title(['Measured Results: ',title_str])
 xlim([-2.5, 2.5])
 ylim([-1.5, 1.5])
 
-figure;
-scatter(a1_theory_conv, a2_theory_conv, 'blue', 'x')
-hold on
-scatter(a1_theory_div, a2_theory_div, 'red', 'x')
-xlabel('a1')
-ylabel('a2')
-legend('Converge', 'Diverge')
-title(['Theoretical Convergence Results: ',title_str])
-xlim([-2.5, 2.5])
-ylim([-1.5, 1.5])
+% figure;
+% scatter(a1_theory_conv, a2_theory_conv, 'blue', 'x')
+% hold on
+% scatter(a1_theory_div, a2_theory_div, 'red', 'x')
+% xlabel('a1')
+% ylabel('a2')
+% legend('Converge', 'Diverge')
+% title(['Theoretical Convergence Results: ',title_str])
+% xlim([-2.5, 2.5])
+% ylim([-1.5, 1.5])
 
 % plot a figure for when the prediction didn't match the realisation
 gray_hex = '#808080';
@@ -179,20 +181,22 @@ ylabel('a2')
 title(['Errors in convergence prediction: ',title_str])
 xlim([-2.5, 2.5])
 ylim([-1.5, 1.5])
+fontsize(fnt, 'points')
 
-% plot true/false pos/neg
-figure;
-scatter(a1_true_pos, a2_true_pos, "blue", 'o')
-hold on
-scatter(a1_true_neg, a2_true_neg, "blue", 'x')
-scatter(a1_false_pos, a2_false_pos, 'red', 'o')
-scatter(a1_false_neg, a2_false_neg, 'red', 'x')
-legend('true pos', 'true neg', 'false pos', 'false neg')
-xlabel('a1')
-ylabel('a2')
-title(['Errors in convergence prediction: ',title_str])
-xlim([-2.5, 2.5])
-ylim([-1.5, 1.5])
+
+% % plot true/false pos/neg
+% figure;
+% scatter(a1_true_pos, a2_true_pos, "blue", 'o')
+% hold on
+% scatter(a1_true_neg, a2_true_neg, "blue", 'x')
+% scatter(a1_false_pos, a2_false_pos, 'red', 'o')
+% scatter(a1_false_neg, a2_false_neg, 'red', 'x')
+% legend('true pos', 'true neg', 'false pos', 'false neg')
+% xlabel('a1')
+% ylabel('a2')
+% title(['Errors in convergence prediction: ',title_str])
+% xlim([-2.5, 2.5])
+% ylim([-1.5, 1.5])
 
 %% Question 2
 %
@@ -358,26 +362,18 @@ load sunspot.dat
 ss_data = sunspot(:, 2);
 ss_data_ACF = xcorr(ss_data, 'unbiased');
 
-% Finding Yule Walker Coefficients
 data = ss_data_ACF;
-
 MAX_MODEL_ORDER = 10; 
 OFFSET = (length(data) - 1)/2;
 
-% storing output coefficients - a's
 a_matrix = zeros(MAX_MODEL_ORDER,MAX_MODEL_ORDER);
-% storing PACF as defined in Lec 2, Appendix 5 as the diagonal of a_matrix
+% PACF defined in Lec 2, Appendix 5 as the diagonal of a_matrix
 pacf = zeros(1, MAX_MODEL_ORDER);
-% aryule_matrix = zeros(MAX_MODEL_ORDER, MAX_MODEL_ORDER);
 
-% storing the ACFs 
-LENGTH_OF_ACFs = 575;
-ACFs = zeros(LENGTH_OF_ACFs,MAX_MODEL_ORDER);
+% compute coefficients
 for p=1:MAX_MODEL_ORDER
     [aryule_a,aryule_e] = aryule(data, p);
-    % a_matrix(p, 1:p+1) = aryule_a;
     a_matrix(p, 1:p) = -1 * aryule_a(2:p+1);
-    
     pacf(1, p) = a_matrix(p, p);
 end
 
@@ -387,24 +383,17 @@ ss_scaled_ACF = xcorr(ss_scaled, 'unbiased');
 
 % Finding Yule Walker Coefficients
 data = ss_scaled_ACF;
-
 MAX_MODEL_ORDER = 10; 
 OFFSET = (length(data) - 1)/2;
 
-% storing output coefficients - a's
 a_scaled_matrix = zeros(MAX_MODEL_ORDER,MAX_MODEL_ORDER);
 % storing PACF as defined in Lec 2, Appendix 5 as the diagonal of a_matrix
 pacf_scaled = zeros(1, MAX_MODEL_ORDER);
-% aryule_matrix = zeros(MAX_MODEL_ORDER, MAX_MODEL_ORDER);
 
-% storing the ACFs 
-LENGTH_OF_ACFs = 575;
-ACFs = zeros(LENGTH_OF_ACFs,MAX_MODEL_ORDER);
+% compute coefficients
 for p=1:MAX_MODEL_ORDER
     [aryule_a,aryule_e] = aryule(data, p);
-    % a_matrix(p, 1:p+1) = aryule_a;
     a_scaled_matrix(p, 1:p) = -1 * aryule_a(2:p+1);
-    
     pacf_scaled(1, p) = a_scaled_matrix(p, p);
 end
 
@@ -422,168 +411,129 @@ stem(1:length(pacf_scaled), pacf_scaled, 'k', 'LineWidth', 1.5, 'DisplayName', '
 plot(0:length(pacf_scaled)+1, ones(1, length(pacf_scaled)+2) * (1.96 / sqrt(288)), 'Color', 'red', 'LineStyle', '--', 'HandleVisibility', 'off');
 plot(0:length(pacf_scaled)+1, ones(1, length(pacf_scaled)+2) * -(1.96 / sqrt(288)), 'Color', 'red', 'LineStyle', '--', 'HandleVisibility', 'off');
 
+fnt = 15;
 % Grid and labels
 grid on;
 xlabel('tau');
 ylabel('Amplitude');
 title('Partial Autocorrelation Function');
-legend('Interpreter', 'latex');
-
+fontsize(fnt, 'points')
+legend('Interpreter', 'latex', 'FontSize', 15);
 % Adjust x-axis limits
 xlim([0, length(pacf_scaled) + 1]);
 
 %% Question 4
-clear all 
-close all 
 clc
-
-load sunspot.dat
-ss_data = sunspot(:, 2);
-% zero mean and unit variance
-ss_scaled = zscore(ss_data);
-ss_scaled_ACF = xcorr(ss_scaled, 'unbiased');
-
-% i think
-N = length(ss_data);
-
-% Finding Yule Walker Coefficients
-data = ss_scaled_ACF;
-
-MAX_MODEL_ORDER = 10; 
-OFFSET = (length(data) - 1)/2;
-
-% storing output coefficients - a's
-a_scaled_matrix = zeros(MAX_MODEL_ORDER,MAX_MODEL_ORDER);
-% storing PACF as defined in Lec 2, Appendix 5 as the diagonal of a_matrix
-pacf_scaled = zeros(1, MAX_MODEL_ORDER);
-
-% storing the ACFs 
-LENGTH_OF_ACFs = 575;
-ACFs = zeros(LENGTH_OF_ACFs,MAX_MODEL_ORDER);
-for p=1:MAX_MODEL_ORDER
-    [aryule_a,aryule_e] = aryule(data, p);
-    % a_matrix(p, 1:p+1) = aryule_a;
-    a_scaled_matrix(p, 1:p) = -1 * aryule_a(2:p+1);
-    pacf_scaled(1, p) = a_scaled_matrix(p, p);
-end
-
-
-% prediction matrix
-predictions = zeros(MAX_MODEL_ORDER, N);
-% store MDL, AIC and AICc
-MDL = zeros(1, MAX_MODEL_ORDER);
-AIC = zeros(1, MAX_MODEL_ORDER);
-AICc = zeros(1, MAX_MODEL_ORDER);
-CMSE = zeros(1, MAX_MODEL_ORDER);
-for p=1:MAX_MODEL_ORDER
-    
-    yw_coeffs = a_scaled_matrix(p, 1:p);
-    a = [1, -yw_coeffs];
-
-    % generate predictions
-    predictions_ = filter(-yw_coeffs, 1, ss_scaled);
-    % the first p values will have to be the original data
-    predictions_(1:length(yw_coeffs)) = ss_scaled(1:length(yw_coeffs));
-    
-    % Calculate residuals and MSE
-    residuals = ss_scaled - predictions_;
-    CMSE(1, p) = N * mean(residuals.^2);
-    
-    Ep = CMSE(1,p);
-    MDL(1, p) = log10(Ep) + (p * log10(N)) / N;
-    AIC(1, p) = log10(Ep) + (2*p) / N;
-    AICc(1, p) = AIC(1,p) + (2 * p * (p + 1)) / (N - p - 1);
-
-    % % save in predictions
-    % predictions(p,1:length(predictions_)) = predictions_;
-
-end
-
-
-% plot the elbowssss
-figure
-hold on
-% plot(1:MAX_MODEL_ORDER, MDL, 'DisplayName', 'MDL')
-plot(1:MAX_MODEL_ORDER, CMSE, 'DisplayName', 'Cumulative Squared Error')
-xlabel('model order p')
-title('MDL for sunspot data')
-
-%% Question 4 - Gemini
-
-clear all
 close all
-clc
+clear
 
 load sunspot.dat
-ss_data = sunspot(:, 2);
-% zero mean and unit variance
-ss_scaled = zscore(ss_data);
 
-N = length(ss_data);
 MAX_MODEL_ORDER = 10;
+ss = sunspot(:,2);
+ss_scaled = zscore(ss);
+N = length(ss_scaled(:,1));
 
-% storing output coefficients - a's
-a_scaled_matrix = zeros(MAX_MODEL_ORDER, MAX_MODEL_ORDER);
 
-% storing PACF as defined in Lec 2, Appendix 5 as the diagonal of a_matrix
-pacf_scaled = zeros(1, MAX_MODEL_ORDER);
+% matrix to store predictions
+pred = zeros(N, 10);
+% store YW coeffs
+a_matrix = zeros(MAX_MODEL_ORDER+1, MAX_MODEL_ORDER);
 
-for p = 1:MAX_MODEL_ORDER
-    [aryule_a, aryule_e] = aryule(ss_scaled, p); % Pass ss_scaled directly
-    a_scaled_matrix(p, 1:p) = -1 * aryule_a(2:p + 1);
-    pacf_scaled(1, p) = a_scaled_matrix(p, p);
+
+% find yw coeffs
+for p=1:MAX_MODEL_ORDER
+    [aryule_a, aryule_e] = aryule(ss_scaled, p);
+    a_matrix(p, 1:p+1) = aryule_a(1:p+1);
+    pred(:, p) = filter(-1*aryule_a, 1, ss_scaled);
+end
+% each column is a prediction 
+
+Ep = zeros(N, MAX_MODEL_ORDER);
+o = ones(1,MAX_MODEL_ORDER);
+% initial value
+Ep(1,:) = (pred(1,:) - o* ss_scaled(1));
+
+
+
+for i=2:N % Can't start with index 1 because of Ep(i-1)
+    Ep(i,:) = (pred(i,:)-o*ss_scaled(i)).^2 + Ep(i-1,:);
 end
 
-% store MDL, AIC and AICc
-MDL = zeros(1, MAX_MODEL_ORDER);
-AIC = zeros(1, MAX_MODEL_ORDER);
-AICc = zeros(1, MAX_MODEL_ORDER);
-MSE = zeros(1, MAX_MODEL_ORDER);
 
-for p = 1:MAX_MODEL_ORDER
-    yw_coeffs = a_scaled_matrix(p, 1:p);
-    % predictions = filter(-yw_coeffs, 1, ss_scaled);
-    % % predictions(1:length(yw_coeffs)) = ss_scaled(1:length(yw_coeffs));
-    a = [1, -yw_coeffs];
-    
-    % Manual AR prediction (no function)
-    predictions = zeros(N, 1);
-    predictions(1:p) = ss_scaled(1:p); % Initialize first p values
+% MDL = log(Ep(N,(1:MAX_MODEL_ORDER))) + (1:MAX_MODEL_ORDER)*log(N)/N;
+% AIC = log(Ep(N,(1:MAX_MODEL_ORDER))) + (1:MAX_MODEL_ORDER)*2/N;
+% AICc = AIC + (2*(1:MAX_MODEL_ORDER) .* (1:MAX_MODEL_ORDER))/(N-(1:MAX_MODEL_ORDER)-1);
 
-    for t = p + 1:N
-        predictions(t) = yw_coeffs * ss_scaled(t - p:t - 1);
-    end
-
-
-    % Calculate residuals and Cumulative MSE
-    residuals = ss_scaled - predictions;
-    Ep = sum(residuals.^2);
-    
-    CMSE(1, p) = Ep;
-    MDL(1, p) = log(Ep) + (p * log(N)) / N; 
-    AIC(1, p) = log(Ep) + (2 * p) / N; 
-    AICc(1, p) = AIC(1, p) + (2 * p * (p + 1)) / (N - p - 1);
-end
+CMSE = Ep(end, :);
+p = 1:MAX_MODEL_ORDER;
+MDL = log(CMSE) + (p + log(N)) / N;
+AIC = log(CMSE) + 2*p/N;
+AICc = AIC + (2 * p .* (p + 1))./(N-1 -1*p);
 
 % Plotting
 figure;
-subplot(3, 1, 1);
-plot(1:MAX_MODEL_ORDER, MDL);
-title('MDL');
-xlabel('Model Order');
-ylabel('MDL Value');
+hold on;
+linewidth = 1;
+fontsize = 16;
 
-subplot(3, 1, 2);
-plot(1:MAX_MODEL_ORDER, AIC);
-title('AIC');
-xlabel('Model Order');
-ylabel('AIC Value');
+% Plot lines with DisplayName for legend
+h1 = plot(1:MAX_MODEL_ORDER, MDL, 'b-', 'DisplayName', 'MDL', 'LineWidth', linewidth);
+h2 = plot(1:MAX_MODEL_ORDER, AIC, 'r-', 'DisplayName', 'AIC', 'LineWidth', linewidth);
+h3 = plot(1:MAX_MODEL_ORDER, AICc, 'm-', 'DisplayName', 'AICc', 'LineWidth', linewidth);
 
-subplot(3, 1, 3);
-plot(1:MAX_MODEL_ORDER, AICc);
-title('AICc');
-xlabel('Model Order');
-ylabel('AICc Value');
+% Plot scatter without DisplayName (will be excluded from legend)
+scatter(1:MAX_MODEL_ORDER, MDL, 'b');
+scatter(1:MAX_MODEL_ORDER, AIC, 'r');
+scatter(1:MAX_MODEL_ORDER, AICc, 'm' );
 
-% figure;
-% plot(1:MAX_MODEL_ORDER, CMSE)
+xlim([1,MAX_MODEL_ORDER]);
+xticks(1:MAX_MODEL_ORDER); % Add ticks for each model order
+title('Model Selection Criteria', 'FontSize', fontsize);
+xlabel('Model Order', 'FontSize', fontsize);
+ylabel('Criterion Value', 'FontSize', fontsize);
+
+% Specify the handles of the plots to include in the legend
+legend([h1, h2, h3], 'FontSize', fontsize);
+
+grid on; % Optional: Add a grid for better readability
+hold off;
+%% Question 5
+
+clc
+close all
+clear
+
+load sunspot.dat
+
+ss = sunspot(:,2);
+% ss = zscore(ss);
+N = length(ss(:,1));
+
+% find YW coeffs
+a1 = aryule(ss, 1);
+a2 = aryule(ss, 2);
+a10 = aryule(ss, 10);
+% find predictions
+pred1 = filter(-1*a1, 1, ss);
+pred2 = filter(-1*a2, 1, ss);
+pred10 = filter(-1*a10, 1, ss);
+
+
+
+% prediction with variable horizon
+
+future_steps = 10;               % Predict 10 steps ahead
+
+
+x_pred = zeros(future_steps,1);  % Initialize predictions
+x_pred(1:2) = ss(end-1:end);     % Start with last known values
+x_pred(1:2) = ss(1:2);     % Start with first two values
+
+for i = 3:future_steps
+    x_pred(i) = -a2(2:end) * flip(x_pred(i-2:i-1)); % Predict next value
+end
+
+plot(1:N, ss, 'b', N+1:N+future_steps, x_pred, 'r--');
+legend('Actual Data', 'Extrapolated Data');
+title('Extrapolation Example');

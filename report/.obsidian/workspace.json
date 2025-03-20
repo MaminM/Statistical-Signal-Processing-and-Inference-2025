@@ -72,7 +72,7 @@
                 "autoReveal": false
               },
               "icon": "lucide-folder-closed",
-              "title": "Files"
+              "title": "File explorer"
             }
           },
           {
@@ -188,7 +188,7 @@
   },
   "left-ribbon": {
     "hiddenItems": {
-      "daily-notes:Open today's daily note": false,
+      "daily-notes:Open today's note": false,
       "switcher:Open quick switcher": false,
       "graph:Open graph view": false,
       "canvas:Create new canvas": false,
@@ -198,6 +198,11 @@
   },
   "active": "fb8bfc6c2eaae684",
   "lastOpenFiles": [
+    "Pasted image 20250320175451.png",
+    "Pasted image 20250320092402.png",
+    "Pasted image 20250320092213.png",
+    "Pasted image 20250320092131.png",
+    "part_2_3.png",
     "trial.png",
     "Report.md",
     "random_processes_means_with_theory.jpg",
@@ -205,11 +210,6 @@
     "part2_3_q_2.png",
     "Pasted image 20250129091920.png",
     "part2_3_q_1.png",
-    "part2_1_q2_small.png",
-    "part2_1_q1.png",
-    "part_2_2_q1_ccf.png",
-    "Pasted image 20250129092122.png",
-    "Pasted image 20250129092139.png",
     "Important Facts I forget.md",
     "Welcome.md"
   ]

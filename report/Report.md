@@ -267,8 +267,12 @@ z = roots(a);
 theoretical_convergence = all(abs(z) < 1);
 ```
 
-![[part2_3_q_1.png]]
+![[part_2_3.png]]
 
+==Derivation is in the slides==
+
+![[Pasted image 20250320092131.png | 300]]
+![[Pasted image 20250320092213.png | 300]]
 
 ### Question 2
 
@@ -281,3 +285,8 @@ $N=250$, the ACF reveals it's true pattern
 
 ### Question 3 - Yule-Walker Equations
 
+![[Pasted image 20250320092402.png | 500]]
+
+## Question 4
+
+![[Pasted image 20250320175451.png]]
