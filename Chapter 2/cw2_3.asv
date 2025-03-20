@@ -381,14 +381,6 @@ for p=1:MAX_MODEL_ORDER
     pacf(1, p) = a_matrix(p, p);
 end
 
-% plot PACf
-figure;
-scatter(1:p, pacf)
-grid on
-xlabel('tau')
-ylabel('Amplitude')
-title('Partial Autocorrelation Function')
-
 % zero mean and unit variance
 ss_scaled = zscore(ss_data);
 ss_scaled_ACF = xcorr(ss_scaled, 'unbiased');
@@ -421,25 +413,177 @@ figure;
 hold on;
 
 % Plot scaled PACF with stem plot
-stem(1:length(pacf), pacf, 'b', 'LineWidth', 1, 'Label); % Blue, thinner, dashed
+stem(1:length(pacf), pacf, 'b', 'LineWidth', 1, 'DisplayName','original'); % Blue, thinner, dashed
 % zero mean, unit variance
-stem(1:length(pacf_scaled), pacf_scaled, 'k', 'LineWidth', 1.5);
+stem(1:length(pacf_scaled), pacf_scaled, 'k', 'LineWidth', 1.5, 'DisplayName', '$\mu = 0$, $\sigma = 1$');
 
 
-% Plot confidence intervals
-plot(1:length(pacf_scaled), ones(1, length(pacf_scaled)) * (1.96 / sqrt(288)), 'Color', 'red', 'LineStyle', '--');
-plot(1:length(pacf_scaled), ones(1, length(pacf_scaled)) * -(1.96 / sqrt(288)), 'Color', 'red', 'LineStyle', '--');
+% Plot confidence intervals (hide from legend)
+plot(0:length(pacf_scaled)+1, ones(1, length(pacf_scaled)+2) * (1.96 / sqrt(288)), 'Color', 'red', 'LineStyle', '--', 'HandleVisibility', 'off');
+plot(0:length(pacf_scaled)+1, ones(1, length(pacf_scaled)+2) * -(1.96 / sqrt(288)), 'Color', 'red', 'LineStyle', '--', 'HandleVisibility', 'off');
 
 % Grid and labels
 grid on;
 xlabel('tau');
 ylabel('Amplitude');
-title('Partial Autocorrelation Function | Zero mean, unit variance');
+title('Partial Autocorrelation Function');
+legend('Interpreter', 'latex');
 
 % Adjust x-axis limits
-xlim([0.5, length(pacf_scaled) + 0.5]);
-% add red lines for confidence interval of 95%
-% +-1.96/root(N)
+xlim([0, length(pacf_scaled) + 1]);
 
 %% Question 4
+clear all 
+close all 
+clc
 
+load sunspot.dat
+ss_data = sunspot(:, 2);
+% zero mean and unit variance
+ss_scaled = zscore(ss_data);
+ss_scaled_ACF = xcorr(ss_scaled, 'unbiased');
+
+% i think
+N = length(ss_data);
+
+% Finding Yule Walker Coefficients
+data = ss_scaled_ACF;
+
+MAX_MODEL_ORDER = 10; 
+OFFSET = (length(data) - 1)/2;
+
+% storing output coefficients - a's
+a_scaled_matrix = zeros(MAX_MODEL_ORDER,MAX_MODEL_ORDER);
+% storing PACF as defined in Lec 2, Appendix 5 as the diagonal of a_matrix
+pacf_scaled = zeros(1, MAX_MODEL_ORDER);
+
+% storing the ACFs 
+LENGTH_OF_ACFs = 575;
+ACFs = zeros(LENGTH_OF_ACFs,MAX_MODEL_ORDER);
+for p=1:MAX_MODEL_ORDER
+    [aryule_a,aryule_e] = aryule(data, p);
+    % a_matrix(p, 1:p+1) = aryule_a;
+    a_scaled_matrix(p, 1:p) = -1 * aryule_a(2:p+1);
+    pacf_scaled(1, p) = a_scaled_matrix(p, p);
+end
+
+
+% prediction matrix
+predictions = zeros(MAX_MODEL_ORDER, N);
+% store MDL, AIC and AICc
+MDL = zeros(1, MAX_MODEL_ORDER);
+AIC = zeros(1, MAX_MODEL_ORDER);
+AICc = zeros(1, MAX_MODEL_ORDER);
+CMSE = zeros(1, MAX_MODEL_ORDER);
+for p=1:MAX_MODEL_ORDER
+    
+    yw_coeffs = a_scaled_matrix(p, 1:p);
+    a = [1, -yw_coeffs];
+
+    % generate predictions
+    predictions_ = filter(-yw_coeffs, 1, ss_scaled);
+    % the first p values will have to be the original data
+    predictions_(1:length(yw_coeffs)) = ss_scaled(1:length(yw_coeffs));
+    
+    % Calculate residuals and MSE
+    residuals = ss_scaled - predictions_;
+    CMSE(1, p) = N * mean(residuals.^2);
+    
+    Ep = CMSE(1,p);
+    MDL(1, p) = log10(Ep) + (p * log10(N)) / N;
+    AIC(1, p) = log10(Ep) + (2*p) / N;
+    AICc(1, p) = AIC(1,p) + (2 * p * (p + 1)) / (N - p - 1);
+
+    % % save in predictions
+    % predictions(p,1:length(predictions_)) = predictions_;
+
+end
+
+
+% plot the elbowssss
+figure
+hold on
+% plot(1:MAX_MODEL_ORDER, MDL, 'DisplayName', 'MDL')
+plot(1:MAX_MODEL_ORDER, CMSE, 'DisplayName', 'Cumulative Squared Error')
+xlabel('model order p')
+title('MDL for sunspot data')
+
+%% Question 4 - Gemini
+
+clear all
+close all
+clc
+
+load sunspot.dat
+ss_data = sunspot(:, 2);
+% zero mean and unit variance
+ss_scaled = zscore(ss_data);
+
+N = length(ss_data);
+MAX_MODEL_ORDER = 10;
+
+% storing output coefficients - a's
+a_scaled_matrix = zeros(MAX_MODEL_ORDER, MAX_MODEL_ORDER);
+
+% storing PACF as defined in Lec 2, Appendix 5 as the diagonal of a_matrix
+pacf_scaled = zeros(1, MAX_MODEL_ORDER);
+
+for p = 1:MAX_MODEL_ORDER
+    [aryule_a, aryule_e] = aryule(ss_scaled, p); % Pass ss_scaled directly
+    a_scaled_matrix(p, 1:p) = -1 * aryule_a(2:p + 1);
+    pacf_scaled(1, p) = a_scaled_matrix(p, p);
+end
+
+% store MDL, AIC and AICc
+MDL = zeros(1, MAX_MODEL_ORDER);
+AIC = zeros(1, MAX_MODEL_ORDER);
+AICc = zeros(1, MAX_MODEL_ORDER);
+MSE = zeros(1, MAX_MODEL_ORDER);
+
+for p = 1:MAX_MODEL_ORDER
+    yw_coeffs = a_scaled_matrix(p, 1:p);
+    % predictions = filter(-yw_coeffs, 1, ss_scaled);
+    % % predictions(1:length(yw_coeffs)) = ss_scaled(1:length(yw_coeffs));
+    a = [1, -yw_coeffs];
+    
+    % Manual AR prediction (no function)
+    predictions = zeros(N, 1);
+    predictions(1:p) = ss_scaled(1:p); % Initialize first p values
+
+    for t = p + 1:N
+        predictions(t) = yw_coeffs * ss_scaled(t - p:t - 1);
+    end
+
+
+    % Calculate residuals and Cumulative MSE
+    residuals = ss_scaled - predictions;
+    Ep = sum(residuals.^2);
+    
+    CMSE(1, p) = Ep;
+    MDL(1, p) = log(Ep) + (p * log(N)) / N; 
+    AIC(1, p) = log(Ep) + (2 * p) / N; 
+    AICc(1, p) = AIC(1, p) + (2 * p * (p + 1)) / (N - p - 1);
+end
+
+% Plotting
+figure;
+subplot(3, 1, 1);
+plot(1:MAX_MODEL_ORDER, MDL);
+title('MDL');
+xlabel('Model Order');
+ylabel('MDL Value');
+
+subplot(3, 1, 2);
+plot(1:MAX_MODEL_ORDER, AIC);
+title('AIC');
+xlabel('Model Order');
+ylabel('AIC Value');
+
+subplot(3, 1, 3);
+plot(1:MAX_MODEL_ORDER, AICc);
+title('AICc');
+xlabel('Model Order');
+ylabel('AICc Value');
+
+% figure;
+% plot(1:MAX_MODEL_ORDER, CMSE)
