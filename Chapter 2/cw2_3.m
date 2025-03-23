@@ -471,6 +471,7 @@ MDL = log(CMSE) + (p + log(N)) / N;
 AIC = log(CMSE) + 2*p/N;
 AICc = AIC + (2 * p .* (p + 1))./(N-1 -1*p);
 
+
 % Plotting
 figure;
 hold on;
@@ -481,59 +482,86 @@ fontsize = 16;
 h1 = plot(1:MAX_MODEL_ORDER, MDL, 'b-', 'DisplayName', 'MDL', 'LineWidth', linewidth);
 h2 = plot(1:MAX_MODEL_ORDER, AIC, 'r-', 'DisplayName', 'AIC', 'LineWidth', linewidth);
 h3 = plot(1:MAX_MODEL_ORDER, AICc, 'm-', 'DisplayName', 'AICc', 'LineWidth', linewidth);
+h4 = plot(1:MAX_MODEL_ORDER, log(CMSE),'y' ,'DisplayName', 'Cumulative squared error', 'LineWidth',linewidth);
 
 % Plot scatter without DisplayName (will be excluded from legend)
 scatter(1:MAX_MODEL_ORDER, MDL, 'b');
 scatter(1:MAX_MODEL_ORDER, AIC, 'r');
 scatter(1:MAX_MODEL_ORDER, AICc, 'm' );
+scatter(1:MAX_MODEL_ORDER, log(CMSE), 'y');
 
 xlim([1,MAX_MODEL_ORDER]);
+ylim([5.8,7]);
+
 xticks(1:MAX_MODEL_ORDER); % Add ticks for each model order
 title('Model Selection Criteria', 'FontSize', fontsize);
 xlabel('Model Order', 'FontSize', fontsize);
 ylabel('Criterion Value', 'FontSize', fontsize);
 
 % Specify the handles of the plots to include in the legend
-legend([h1, h2, h3], 'FontSize', fontsize);
+legend([h1, h2, h3, h4], 'FontSize', fontsize);
 
 grid on; % Optional: Add a grid for better readability
 hold off;
 %% Question 5
 
-clc
-close all
-clear
-
 load sunspot.dat
 
 ss = sunspot(:,2);
-% ss = zscore(ss);
-N = length(ss(:,1));
+data = zscore(ss);
 
-% find YW coeffs
-a1 = aryule(ss, 1);
-a2 = aryule(ss, 2);
-a10 = aryule(ss, 10);
-% find predictions
-pred1 = filter(-1*a1, 1, ss);
-pred2 = filter(-1*a2, 1, ss);
-pred10 = filter(-1*a10, 1, ss);
+% Load the sunspot data (assumed to be a 288x1 array called 'data')
+N = length(data);
+train_ratio = 0.8;
+train_size = round(train_ratio * N);
 
+train_data = data(1:train_size);
+test_data = data(train_size+1:end);
 
+orders = [1, 2, 10]; % AR model orders
+horizons = [1, 2, 5, 10]; % Prediction horizons
 
-% prediction with variable horizon
+% Store predictions
+predictions = cell(length(orders), length(horizons));
 
-future_steps = 10;               % Predict 10 steps ahead
+% Fit AR models and predict
+for i = 1:length(orders)
+    p = orders(i);
+    model = ar(train_data, p, 'ls'); % Fit AR model using least squares
 
+    for j = 1:length(horizons)
+        m = horizons(j);
+        preds = zeros(length(test_data) - m, 1);
 
-x_pred = zeros(future_steps,1);  % Initialize predictions
-x_pred(1:2) = ss(end-1:end);     % Start with last known values
-x_pred(1:2) = ss(1:2);     % Start with first two values
+        for k = 1:length(test_data) - m
+            history = [train_data; test_data(1:k)]; % Update history
+            model_dyn = ar(history, p, 'ls'); % Refit AR model
+            pred = predict(model_dyn, history, m);
+            preds(k) = pred(end);
+        end
 
-for i = 3:future_steps
-    x_pred(i) = -a2(2:end) * flip(x_pred(i-2:i-1)); % Predict next value
+        predictions{i, j} = preds;
+    end
 end
 
-plot(1:N, ss, 'b', N+1:N+future_steps, x_pred, 'r--');
-legend('Actual Data', 'Extrapolated Data');
-title('Extrapolation Example');
+
+% Plot actual vs Predicted
+
+figure;
+hold on;
+colors = lines(length(orders)); % Generate distinct colors
+
+for i = 1:length(orders)
+    for j = 1:length(horizons)
+        subplot(length(orders), length(horizons), (i-1) * length(horizons) + j);
+        plot(test_data(horizons(j)+1:end), 'k', 'DisplayName', 'Actual');
+        hold on;
+        plot(predictions{i, j}, 'Color', colors(i, :), 'LineStyle', '--', 'DisplayName', sprintf('AR(%d)', orders(i)));
+        title(sprintf('AR(%d), Horizon %d', orders(i), horizons(j)));
+    end
+end
+
+% Create a single legend outside the subplots
+hold off;
+legend_entries = [{'Actual'}, arrayfun(@(p) sprintf('AR(%d)', p), orders, 'UniformOutput', false)];
+legend(legend_entries, 'Position', [0.8, 0.1, 0.1, 0.1]); % Adjust position as needed

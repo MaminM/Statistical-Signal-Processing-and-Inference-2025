@@ -285,8 +285,133 @@ $N=250$, the ACF reveals it's true pattern
 
 ### Question 3 - Yule-Walker Equations
 
+The figure below clearly indicated 
+
 ![[Pasted image 20250320092402.png | 500]]
 
-## Question 4
+### Question 4
+
+All three metrics aim to balance the reduction in error with the increase in complexity, they do so by different penalty terms.
+
+For Minimum description length (MDL) and Akaike Information Criterion (AIC), the global minimum would indicate that model order of 9 is ideal. However, the first minimum is at the order of 2 and as expected, with the corrected AIC which is better for smaller samples sizes, the global minimum becomes more clear.
 
 ![[Pasted image 20250320175451.png]]
+### Question 5
+
+![[q5_horizons.svg| 900]]
+The results show that increasing model order allows for more accurate predictions over a longer horizon.  AR(1) and AR(2) both fail at larger horizons, as we can see a model fail to capture the pattern.
+This can be justified as in multi-step forecasting, error accumulation increases with prediction horizon, paradoxically favoring higher complexity models that overfit less in longer predictions.
+The tradeoff between model order and prediction error becomes clear: extrapolation favours higher model orders, however, it increases the chances of overmodelling, where increased variance makes predictions more sensitive to noise.
+
+
+## 2.4 Cramer-Rao Lower Bound
+
+### Question 1a.
+
+![[part2_4_1_combined.png]]
+
+The PCF drops of far below the threshold of $\pm 1.96/\sqrt{N}$ for model order, $p> 1$.
+The information theoretic criteria also show the same. The MDL and AIC do not show any obvious global minimum and the AIC corrected for smaller model order shows a clear optimal model order of $p=1$
+
+### Question 1b.
+The following derivations have been sourced from Stephen Kay’s ’Fundamentals of Signal Processing: Estimation Theory’. The PSD implied by the AR model is:
+
+$$P_{xx}(f; \mathbf{\theta}) = \frac{\sigma_u^2}{|A(f)|^2} \quad (1)$$
+
+where $\mathbf{\theta} = [a[1], a[2], \dots, a[p], \sigma_u^2]^T$ and $A(f) = \sum_{m=1}^{p} a[m] \exp(j2\pi fm)$. The partial derivatives are:
+
+$$\frac{\partial \ln P_{xx}(f; \mathbf{\theta})}{\partial a[k]} = \frac{\partial \ln |A(f)|^2}{\partial a[k]} \quad (2)$$
+
+$$= \frac{1}{|A(f)|^2} [A(f) \exp(j2\pi fk) + A^*(f) \exp(-j2\pi fk)] \quad (3)$$
+
+$$\frac{\partial \ln P_{xx}(f; \mathbf{\theta})}{\partial \sigma_u^2} = \frac{1}{\sigma_u^2} \quad (4)$$
+
+For $k = 1, 2, \dots, p$ and $l = 1, 2, \dots, p$, we have:
+
+$$I[\mathbf{\theta}]_{kl} = \frac{N}{2} \int_{-0.5}^{0.5} \frac{1}{|A(f)|^4} [A(f) \exp(j2\pi fk) + A^*(f) \exp(-j2\pi fk)] \times [A(f) \exp(j2\pi fl) + A^*(f) \exp(-j2\pi fl)] df \quad (5)$$
+
+$$= \frac{N}{2} \int_{-0.5}^{0.5} \frac{1}{A^*(f)^2} \exp(j2\pi f(k+l)) + \frac{1}{|A(f)|^2} \exp(j2\pi f(k-l)) + \frac{1}{|A(f)|^2} \exp(j2\pi f(l-k)) + \frac{1}{A^2(f)} \exp(-j2\pi f(l+k)) df \quad (6)$$
+
+Using the Hermitian property of the integrand ($A(f) = A^*(f)$), we have
+
+$$\int_{-0.5}^{0.5} \frac{1}{A^*(f)^2} \exp(j2\pi f(k+l)) df = \int_{-0.5}^{0.5} \frac{1}{A^2(f)} \exp(-j2\pi f(l+k)) df \quad (7)$$
+
+$$\int_{-0.5}^{0.5} \frac{1}{|A(f)|^2} \exp(j2\pi f(k-l)) df = \int_{-0.5}^{0.5} \frac{1}{|A(f)|^2} \exp(j2\pi f(l-k)) df \quad (8)$$
+
+Therefore,
+
+$$I[\mathbf{\theta}]_{kl} = N \int_{-0.5}^{0.5} \frac{1}{A^*(f)^2} \exp(j2\pi f(k+l)) df + N \int_{-0.5}^{0.5} \frac{1}{|A(f)|^2} \exp(j2\pi f(k-l)) df \quad (9)$$
+
+The second integral is the inverse Fourier transform of $\frac{1}{A^*(f)^2}$ evaluated at $n = k+l > 0$. This term is $0$ since the sequence is the convolution of 2 anti-causal sequences, i.e.,
+
+$$\mathcal{F}^{-1} \left[ \frac{1}{A(f)} \right] = \begin{cases} h[n], & n \geq 0 \\ 0, & n < 0 \end{cases} \quad (10)$$
+
+$$\mathcal{F}^{-1} \left[ \frac{1}{A^*(f)^2} \right] = \begin{cases} h[n] * h[n], & n < 0 \\ 0, & n \geq 0 \end{cases} \quad (11)$$
+
+Therefore,
+
+$$I[\mathbf{\theta}]_{kl} = \frac{N}{\sigma_u^2} r_{xx}(k-l) \quad (12)$$
+
+We are given $I_{11}$, $I_{12}$ and $I_{21}$. For $k = p+1$ and $l = p+1$:
+
+$$I[\mathbf{\theta}]_{kl} = \frac{N}{2} \int_{-0.5}^{0.5} \frac{1}{\sigma_u^4} df = \frac{N}{2\sigma_u^4} \quad (13)$$
+
+Therefore,
+
+$$I(\mathbf{\theta}) = \begin{bmatrix} \frac{N}{\sigma_u^2} R_{xx} & \mathbf{0} \\ \mathbf{0}^T & \frac{N}{2\sigma_u^4} \end{bmatrix} \quad (14)$$
+
+where $[R_{xx}]_{ij} = r_{xx}(i-j)$ is a $p \times p$ Toeplitz autocorrelation matrix and $\mathbf{0}$ is a $p \times 1$ vector of zeros.
+
+### Question 1c.
+$$var(a[\hat k]) \geq \frac{\sigma^2_u}{N}[R_{xx}^-1]_{kk}\quad \text{for k = 1,2,...,p} \quad (15)$$
+$$var(\sigma_u^2) \geq \frac{2\sigma_u^4}{N} \quad (16)$$
+$$\text{Using p = 1,}\ (a[\hat 1]) \geq \frac{\sigma_u^2}{Nr_{xx}[0]} \quad (17)$$
+$$\text{But } r_{xx}[0] = \frac{\sigma_u^2}{1-a^2[1]} \quad (18)$$
+$$\text{So that } var(a[\hat 1] \geq \frac{1}{N}(1-a^2[1]) \quad (19)$$
+Estimation of the filter parameter improves when $a[1]$ nears 1, not 0; because the filter's pole resides at $-a[1]$, processes with PSDs displaying sharp peaks offer enhanced parameter estimation.
+#### i.
+
+![[part_2_5_heatmap.svg]]
+
+
+#### ii. ==NOT SURE==
+
+
+
+### Question 1d.
+
+For $p = 1$,
+$$\hat{P}_x (f ; \theta) \Bigg|_{a_1} = \frac{\sigma^2}{2} \left[ e^{j2\pi f} A(f) + e^{-j2\pi f} A(f) \right] \frac{1}{|A(f)|^4} \quad(20)$$
+
+$$= \frac{\sigma^2}{2} \left[ e^{j2\pi f} a_1 + e^{-j2\pi f} a_1 \right] \frac{1}{|A(f)|^4} \quad(21)$$
+
+$$= \frac{\sigma^2}{2} \left[ 2 \cos(2\pi f) a_1 \right] \frac{1}{|A(f)|^4} \quad(22)$$
+
+$$= \frac{\sigma^2 2 \cos(2\pi f) a_1}{|A(f)|^4} \quad(23)$$
+
+and
+
+$$\hat{P}_x (f ; \theta) \Bigg|_{\sigma^2} = \frac{1}{|A(f)|^2} \quad(24)$$
+
+Thus,
+
+$$\text{var} \left( \hat{P}_x (f ; \theta) \right) \leq \left[ \frac{\sigma^2 2 \cos(2\pi f) a_1}{|A(f)|^4} \right] \left[ \frac{1}{|A(f)|^2} \right] \left[ 1 - a_1^2 \right] \frac{1}{N} \quad(25)$$
+
+$$= \left[ \frac{\sigma^4 2 \cos(2\pi f) a_1}{|A(f)|^4} \right] \left[ \frac{1}{|A(f)|^2} \right] \left[ 1 - a_1^2 \right] \frac{1}{N} \quad(26)$$
+
+$$= \frac{1}{N} \left[ \frac{\sigma^4 4 (\cos(2\pi f) a_1)^2 (1 - a_1^2)}{|A(f)|^8} + \frac{\sigma^4}{|A(f)|^4} \right] \quad(27)$$
+
+
+
+
+## 2.5 Real World Signals: ECG from iAMp experiment
+
+### Question 1
+
+
+
+
+
+# Part 3: Spectral Estimation
+
+

@@ -106,7 +106,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "cb35f2370a56f8b7",
@@ -198,6 +199,10 @@
   },
   "active": "fb8bfc6c2eaae684",
   "lastOpenFiles": [
+    "part_2_5_heatmap.svg",
+    "part2_4_1_combined.png",
+    "part2_4_1_pcf.svg",
+    "q5_horizons.svg",
     "Pasted image 20250320175451.png",
     "Pasted image 20250320092402.png",
     "Pasted image 20250320092213.png",
@@ -206,10 +211,6 @@
     "trial.png",
     "Report.md",
     "random_processes_means_with_theory.jpg",
-    "Pasted image 20250307114729.png",
-    "part2_3_q_2.png",
-    "Pasted image 20250129091920.png",
-    "part2_3_q_1.png",
     "Important Facts I forget.md",
     "Welcome.md"
   ]
