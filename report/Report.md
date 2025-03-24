@@ -298,7 +298,7 @@ For Minimum description length (MDL) and Akaike Information Criterion (AIC), the
 ![[Pasted image 20250320175451.png]]
 ### Question 5
 
-![[q5_horizons.svg| 900]]
+![[q5_horizons.svg| 700]]
 The results show that increasing model order allows for more accurate predictions over a longer horizon.  AR(1) and AR(2) both fail at larger horizons, as we can see a model fail to capture the pattern.
 This can be justified as in multi-step forecasting, error accumulation increases with prediction horizon, paradoxically favoring higher complexity models that overfit less in longer predictions.
 The tradeoff between model order and prediction error becomes clear: extrapolation favours higher model orders, however, it increases the chances of overmodelling, where increased variance makes predictions more sensitive to noise.
@@ -406,12 +406,84 @@ $$= \frac{1}{N} \left[ \frac{\sigma^4 4 (\cos(2\pi f) a_1)^2 (1 - a_1^2)}{|A(f)|
 
 ## 2.5 Real World Signals: ECG from iAMp experiment
 
-### Question 1
+### Part a.
 
+It is important the note that, I am the person that was recorded and at the time I was sick. This impacted the recording as my heart rate was not stable and I got light-headed throughout the recording. This is reflected in the heart rate distribution failing the resemble a normal distribution.
+![[part_2_5_pde.svg]]
+### Part b.
 
+Raw heart rate exhibits higher variance than smoothed data, suggesting lower Fisher information. 
+Averaging by a factor of 10 reduces variance to σ/10, visually confirmed by the compact distribution at $α=0.6$. 
 
+The α factor also reduces noise bias by shifting the averaged heart rate mean, $\hat h$. Notably, when $α=1$, the means of h and $\hat h$ coincide, implying lower mean and variance for $α=0.6$.
 
+### Part c. - AR modelling of heart rate
+
+The process is autoregressive due to it being sinusoidal and infinite in length. 
+A moving average process have a finite length autocorrelation sequence.
+
+![[part_2_5_acf.svg]]
+
+### Part d. PCF and Information theoretic criterion
+
+**Trial 1**
+The partial autocorrelation function implies that the ideal model order is 1.
+The global minimum of the different metrics are as follows:
+- MDL is order 3
+- AIC is order 2
+- corrected AIC is order 2
+- Cumulative MSE is order 10
+Given that the only clear elbow is from the corrected AIC at an order of 2, and that the PACF strongly favours a lower model order, this process can be modelled as an AR(2) system.
+
+![[part_2_5_pcf.png]]
+
+**Trial 2**
+The partial autocorrelation function implies that the ideal model order is 1.
+The global minimum of the different metrics are as follows:
+- MDL is order 2
+- AIC is order 2
+- corrected AIC is order 1
+- Cumulative MSE is order 10
+
+Given the results, we can conclude that this process can be modelled as an AR(1) process. 
+![[part_2_5_trial2.png]]
+
+**Trial 3**
+The partial autocorrelation function implies that the ideal model order is 1.
+The global minimum of the different metrics are as follows:
+- MDL is order 1
+- AIC is order 1
+- corrected AIC is order 1
+- Cumulative MSE is order 10
+
+Given the results, we can conclude that this process can be modelled as an AR(1) process. 
+
+![[part_2_5_trial3.png]]
 
 # Part 3: Spectral Estimation
 
+**Periodogram function**
 
+- WGN was passed into `pgm.m`
+- Since WGN input is real, the PSD is symmetric and the estimate reflects this clearly
+- The periodogram's estimated PSD does not match the ideal PSD for WGN, which should be 1 at all frequencies
+- The PSD is the FFT of the ACF
+- unbiased ACF estimator's variance increases as $\tau$ increases
+- This causes the periodogram estimator's variance to also increase for large $\tau$
+- Increasing the number of samples makes the mean of the data tend to the ideal case but the variance does not converge to 0.
+- The estimator is not consistent
+
+The periodogram accurately reflects the symmetric PSD of real WGN input. 
+However, it deviates from the ideal flat PSD. The PSD is derived from the ACF's FFT and the estimator's variance increases with lag. This impacts the periodogram's variance. 
+
+Increased sample size improves mean convergence to the ideal PSD. However, the variance remains. Therefore, the periodogram estimator is inconsistent."
+
+![[part_3_1_pgm.svg| 700]]
+
+## 3.1 Averaged periodogram estimates
+
+### Question 1
+
+![[part_3_1_smooth_pgm.svg]]
+Smoothing approximates the function, retaining important trends while removing noise and other sharp details. 
+Visually, the smoothed periodogram shows lower variance and thus appears to be a better estimate.

@@ -171,5 +171,4 @@ ylabel('Variance Value')
 sgtitle('Cramer-Rao Lower Bound Analysis of NASDAQ Data')
 
 
-%% Question 1c) ii.
 

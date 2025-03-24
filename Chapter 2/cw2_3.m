@@ -460,11 +460,6 @@ for i=2:N % Can't start with index 1 because of Ep(i-1)
     Ep(i,:) = (pred(i,:)-o*ss_scaled(i)).^2 + Ep(i-1,:);
 end
 
-
-% MDL = log(Ep(N,(1:MAX_MODEL_ORDER))) + (1:MAX_MODEL_ORDER)*log(N)/N;
-% AIC = log(Ep(N,(1:MAX_MODEL_ORDER))) + (1:MAX_MODEL_ORDER)*2/N;
-% AICc = AIC + (2*(1:MAX_MODEL_ORDER) .* (1:MAX_MODEL_ORDER))/(N-(1:MAX_MODEL_ORDER)-1);
-
 CMSE = Ep(end, :);
 p = 1:MAX_MODEL_ORDER;
 MDL = log(CMSE) + (p + log(N)) / N;
