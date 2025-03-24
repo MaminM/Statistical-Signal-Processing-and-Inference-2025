@@ -464,15 +464,6 @@ Given the results, we can conclude that this process can be modelled as an AR(1)
 
 **Periodogram function**
 
-- WGN was passed into `pgm.m`
-- Since WGN input is real, the PSD is symmetric and the estimate reflects this clearly
-- The periodogram's estimated PSD does not match the ideal PSD for WGN, which should be 1 at all frequencies
-- The PSD is the FFT of the ACF
-- unbiased ACF estimator's variance increases as $\tau$ increases
-- This causes the periodogram estimator's variance to also increase for large $\tau$
-- Increasing the number of samples makes the mean of the data tend to the ideal case but the variance does not converge to 0.
-- The estimator is not consistent
-
 The periodogram accurately reflects the symmetric PSD of real WGN input. 
 However, it deviates from the ideal flat PSD. The PSD is derived from the ACF's FFT and the estimator's variance increases with lag. This impacts the periodogram's variance. 
 
@@ -487,3 +478,34 @@ Increased sample size improves mean convergence to the ideal PSD. However, the v
 ![[part_3_1_smooth_pgm.svg]]
 Smoothing approximates the function, retaining important trends while removing noise and other sharp details. 
 Visually, the smoothed periodogram shows lower variance and thus appears to be a better estimate.
+
+### Question 2
+
+![[part_3_2.svg]]
+
+### Question 3
+
+As the number of segments increase, variance decreases linearly at the cost of lower frequency resolution. 
+However, if we keep samples per segment increases, increasing number of segments (and thus the total number of samples) we get a very accurate estimate of the PSD.
+![[part_3_1_3.svg]]
+## 3.2 Spectrum of autoregressive process
+
+![[part_3_2.svg]]
+### Question 1
+
+As signals $\text{x}$ and $\text{y}$ are real, the PSD is symmetric about $0.5 \text{ Hz}$.
+Inspecting the ideal PSD of the output signal $\textbf{y}$. The normalised cut-off is roughly $0.4 \text{ Hz}$ and the maximum PSD value is at $0.5 \text{ Hz}$. 
+
+### Question 2
+
+The periodogram has some error, this is expected as the estimate is based on a finite number of samples. Despite this, the periodogram manages to capture the general trend, surpressing lower frequencies and allowing high frequencies to pass.
+
+### Question 3
+
+...unsure
+
+
+### Question 4
+
+### Question 5
+

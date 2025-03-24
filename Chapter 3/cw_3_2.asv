@@ -1,0 +1,46 @@
+%% Question 1
+clc
+clear all
+close all
+
+% create 1064 sample WGN 
+x = randn(1064, 1);
+
+% filter
+b = 1;
+a = [1, 0.9];
+y = filter(b, a, x);
+
+% Calculate frequency response
+[h, w] = freqz([1], [1 0.9], 512);
+
+% Plot the magnitude squared of the frequency response
+figure;
+plot(w / (2 * pi), abs(h).^2);
+
+% Add axis labels and title
+xlabel('Normalized Frequency (cycles/sample)');
+ylabel('|H(f)|^2 (Magnitude Squared)');
+title('Frequency Response of Filter: H(z) = 1 / (1 - 0.9z^{-1})');
+
+% Optional: Add grid lines for better readability
+grid on;
+
+%% Question 2
+
+% now estimate the psd with periodogram
+y_pgm = pgm(y);
+
+% Plot the magnitude squared of the frequency response
+figure;
+hold on
+plot(w / (2 * pi), abs(h).^2);
+
+% Add axis labels and title
+xlabel('Normalized Frequency (cycles/sample)');
+ylabel('|H(f)|^2 (Magnitude Squared)');
+title('Frequency Response of Filter: H(z) = 1 / (1 - 0.9z^{-1})');
+
+% Optional: Add grid lines for better readability
+grid on;
+
