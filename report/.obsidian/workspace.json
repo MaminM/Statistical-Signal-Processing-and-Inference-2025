@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "849fa0637a596f1e",
+        "id": "2b4d178c2ced3f72",
         "type": "tabs",
         "children": [
           {
-            "id": "d17e85620380f810",
+            "id": "4fd85df39163e48b",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -19,6 +19,20 @@
               },
               "icon": "lucide-file",
               "title": "Report"
+            }
+          },
+          {
+            "id": "72d37224da16a389",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "bla bbla.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "bla bbla"
             }
           }
         ]
@@ -169,21 +183,21 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "d17e85620380f810",
+  "active": "4fd85df39163e48b",
   "lastOpenFiles": [
-    "part_4_5_q1.svg",
-    "part_4_6_b.svg",
-    "part_4_6_a.svg",
-    "part_4_6.svg",
-    "part_4_4.svg",
-    "part_4_3.svg",
-    "part_4_3.png",
-    "part_4_2_q2_b.svg",
-    "part_4_2_q2.svg",
-    "part_4_1_q1.svg",
-    "part_3_4_q4.svg",
-    "par_3_.md",
     "Report.md",
+    "part_3_5_b.svg",
+    "part_3_5_a.svg",
+    "part_3_5.svg",
+    "part_3_4_q2_full.svg",
+    "part_2_3_q2.svg",
+    "part_2_1_q4.svg",
+    "bla bbla.md",
+    "part_2_1_q2.svg",
+    "part_1_3_q3.svg",
+    "part_1_3_q2.svg",
+    "part_1_3_q1.svg",
+    "par_3_.md",
     "part_3_1.md",
     "part_3_1_2.fig",
     "Important Facts I forget.md",

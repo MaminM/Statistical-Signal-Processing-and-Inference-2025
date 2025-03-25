@@ -206,3 +206,102 @@ xlabel('Sample');
 ylabel('Coefficients');
 grid on;
 grid minor;
+
+%%  Question 2
+close all
+clear all
+clc
+
+load 'Chapter 4'\voice.mat
+
+step = 5;
+offsetE = 3.5e4;
+eSeg = e(offsetE:offsetE+1000);
+offsetA = 3.8e4;
+aSeg = a(offsetA:offsetA+1000);
+offsetS = 3.5e4;
+sSeg = s(offsetS:offsetS+1000);
+offsetT = 3e4;
+tSeg = t(offsetT:offsetT+1000);
+offsetX = 4e4;
+xSeg = x(offsetX:offsetX+1000);
+gainE = []; gainA = []; gainS = []; gainT = []; gainX = [];
+for order = [1:1:30]
+    [~, ~, err] = arlms(eSeg', step, order); 
+    gainE = [gainE, prediction_gain(eSeg, err)];
+    [~, ~, err] = arlms(aSeg', step, order); 
+    gainA = [gainA, prediction_gain(aSeg, err)];
+    [~, ~, err] = arlms(sSeg', step, order); 
+    gainS = [gainS, prediction_gain(aSeg, err)];
+    [~, ~, err] = arlms(tSeg', step, order); 
+    gainT = [gainT, prediction_gain(aSeg, err)];
+    [~, ~, err] = arlms(xSeg', step, order); 
+    gainX = [gainX, prediction_gain(aSeg, err)];
+end
+hold on
+plot(gainE, 'LineWidth', 2, 'Color', 'b'); 
+plot(gainA, 'LineWidth', 2, 'Color', 'r'); 
+plot(gainS, 'LineWidth', 2, 'Color', 'g'); 
+plot(gainT, 'LineWidth', 2, 'Color', 'm'); 
+plot(gainX, 'LineWidth', 2, 'Color', 'k'); 
+hold off;
+title('Prediction gain versus filter order');
+xlabel('Order');
+ylabel('Prediction gain');
+legend('e', 'a', 's', 't', 'x');
+
+%% Question 3
+close all
+clear all
+clc
+
+load 'Chapter 4'\voice.mat
+fs = 44100;
+
+%change the sampling rate to 16000Hz
+[P,Q] = rat(16000/fs);
+e_new = resample(e,P,Q);
+a_new = resample(a,P,Q);
+s_new = resample(s,P,Q);
+t_new = resample(t,P,Q);
+x_new = resample(x,P,Q);
+u=5; %adaptation gain
+offset = 1.1e4;
+e_new = e_new(offset:offset+1000);
+offset = 1.38e4;
+a_new = a_new(offset:offset+1000);
+offset = 1.27e4;
+s_new = s_new(offset:offset+1000);
+offset = 1.09e4;
+t_new = t_new(offset:offset+1000);
+offset = 1.45e4;
+x_new = x_new(offset:offset+1000);
+R=[];R1=[];R2=[];R3=[];R4=[];
+for p=[1:1:30]
+    [ y, ap, error ] = arlms( e_new', u, p ); 
+    temp = prediction_gain(e,error);
+    R = [R, temp];
+    [ y, ap, error ] = arlms( a_new', u, p ); 
+    temp = prediction_gain(a,error);
+    R1 = [R1, temp];
+    [ y, ap, error ] = arlms( s_new', u, p ); 
+    temp = prediction_gain(a,error);
+    R2 = [R2, temp];
+    [ y, ap, error ] = arlms( t_new', u, p ); 
+    temp = prediction_gain(a,error);
+    R3 = [R3, temp];
+    [ y, ap, error ] = arlms( x_new', u, p ); 
+    temp = prediction_gain(a,error);
+    R4 = [R4, temp];
+end
+hold on
+plot(R, 'LineWidth', 2, 'Color', 'b'); 
+plot(R1, 'LineWidth', 2, 'Color', 'r'); 
+plot(R2, 'LineWidth', 2, 'Color', 'g'); 
+plot(R3, 'LineWidth', 2, 'Color', 'm'); 
+plot(R4, 'LineWidth', 2, 'Color', 'k'); 
+hold off;
+title('Prediction gain versus filter order with fs = 16000Hz');
+xlabel('Order');
+ylabel('Prediction gain');
+legend('e', 'a', 's', 't', 'x');

@@ -1,6 +1,6 @@
-close all; clear; clc;
-
-% --- 4.1: Wiener Filter Estimation ---
+close all
+clear all
+clc
 
 % Generate random input signal
 x = randn(1, 1000);
@@ -78,15 +78,17 @@ for i = 1:length(noiseStdDevs)
     snrValues(i) = snr(yNormalized, noise);
 end
 
-% Plot Wiener coefficients vs. noise standard deviation
+%% Plot Wiener coefficients vs. noise standard deviation
 figure;
 plot(noiseStdDevs, wienerCoeffs, 'LineWidth', 2);
 xlabel('Noise Standard Deviation', 'FontSize', 14); % Increased font size
 ylabel('Wiener Coefficients', 'FontSize', 14); % Increased font size
 title('Wiener Coefficients vs. Noise Standard Deviation', 'FontSize', 16); % Increased font size
 grid on;
+% legend('0.1', '0.5', '0.75', '1', '5', '7.5', '10')
+legend('\sigma_{\eta} = 0.1', '\sigma_{\eta} = 0.5', '\sigma_{\eta} = 0.75', '\sigma_{\eta} = 1', '\sigma_{\eta} = 5', '\sigma_{\eta} = 7.5', '\sigma_{\eta} = 10');
 
-% Plot SNR vs. noise standard deviation
+%% Plot SNR vs. noise standard deviation
 figure;
 plot(noiseStdDevs, snrValues, 'k', 'LineWidth', 2);
 xlabel('Noise Standard Deviation', 'FontSize', 14); % Increased font size

@@ -72,29 +72,79 @@ title('Tone 2');
 
 N = length(y);
 overlap = 0;
+
 figure;
-spectrogram(y,hann(samplesPerTone), overlap,N,'yaxis');
-ylim([0 0.15])
-title('Spectrogram for the dial tone signal')
 
+% Subplot 1: Spectrogram
+subplot(1, 2, 1);
+spectrogram(y, hann(samplesPerTone), overlap, N, 'yaxis');
+ylim([0 0.15]);
+title('Spectrogram for the dial tone signal');
 
-[s, f, t] = spectrogram(y,hann(samplesPerTone), overlap,N,'yaxis');
-% plot the FFT of Tone 3 (number 0) and Tone 4 (number 1)
+% Subplot 2: FFT of Tone 3 and Tone 4
+subplot(1, 2, 2);
 Tone3 = abs(s(:, 3*2-1));
 Tone4 = abs(s(:, 4*2-1)); 
-
-figure;
 hold on;
-plot(f, mag2db(Tone3), 'LineWidth', 2); % Increased LineWidth
-plot(f, mag2db(Tone4), 'LineWidth', 2); % Increased LineWidth
+plot(f, mag2db(Tone3), 'LineWidth', 2);
+plot(f, mag2db(Tone4), 'LineWidth', 2);
 xlim([0 0.5]);
-xlabel('Normalized Frequency', 'FontSize', 14); % Increased FontSize
-ylabel('Magnitude (dB)', 'FontSize', 14); % Increased FontSize
-title('FFT of Tone 3 and Tone 4', 'FontSize', 16); % Increased FontSize
-legend('Tone 3', 'Tone 4', 'FontSize', 12); % Increased FontSize
+xlabel('Normalized Frequency', 'FontSize', 14);
+ylabel('Magnitude (dB)', 'FontSize', 14);
+title('FFT of Tone 3 and Tone 4', 'FontSize', 16);
+legend('Tone 3', 'Tone 4', 'FontSize', 12);
 grid on;
 hold off;
 
+% % % N = length(y);
+% % % overlap = 0;
+% % % figure;
+% % % spectrogram(y,hann(samplesPerTone), overlap,N,'yaxis');
+% % % ylim([0 0.15])
+% % % title('Spectrogram for the dial tone signal')
+% % % 
+% % % 
+% % % [s, f, t] = spectrogram(y,hann(samplesPerTone), overlap,N,'yaxis');
+% % % % plot the FFT of Tone 3 (number 0) and Tone 4 (number 1)
+% % % Tone3 = abs(s(:, 3*2-1));
+% % % Tone4 = abs(s(:, 4*2-1)); 
+% % % 
+% % % figure;
+% % % hold on;
+% % % plot(f, mag2db(Tone3), 'LineWidth', 2); % Increased LineWidth
+% % % plot(f, mag2db(Tone4), 'LineWidth', 2); % Increased LineWidth
+% % % xlim([0 0.5]);
+% % % xlabel('Normalized Frequency', 'FontSize', 14); % Increased FontSize
+% % % ylabel('Magnitude (dB)', 'FontSize', 14); % Increased FontSize
+% % % title('FFT of Tone 3 and Tone 4', 'FontSize', 16); % Increased FontSize
+% % % legend('Tone 3', 'Tone 4', 'FontSize', 12); % Increased FontSize
+% % % grid on;
+% % % hold off;
+N = length(y);
+overlap = 0;
+
+figure;
+
+% Subplot 1: Spectrogram
+subplot(1, 2, 1);
+spectrogram(y, hann(samplesPerTone), overlap, N, 'yaxis');
+ylim([0 0.15]);
+title('Spectrogram for the dial tone signal');
+
+% Subplot 2: FFT of Number 0 and Number 1
+subplot(1, 2, 2);
+Tone3 = abs(s(:, 3*2-1));
+Tone4 = abs(s(:, 4*2-1)); 
+hold on;
+plot(f, mag2db(Tone3), 'LineWidth', 2);
+plot(f, mag2db(Tone4), 'LineWidth', 2);
+xlim([0 0.5]);
+xlabel('Normalized Frequency', 'FontSize', 14);
+ylabel('Magnitude (dB)', 'FontSize', 14);
+title('FFT of Number 0 and Number 1', 'FontSize', 16);
+legend('Number 0', 'Number 1', 'FontSize', 12);
+grid on;
+hold off;
 
 %% Question 4
 

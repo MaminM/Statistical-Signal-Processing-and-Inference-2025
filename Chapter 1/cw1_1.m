@@ -1,6 +1,8 @@
-%% Random Signals and Stochastic Processes 
-
 %% Question 1
+clc
+clear all
+close all
+
 x = rand(1,1000);
 
 figure; % Create a new figure
@@ -254,13 +256,13 @@ x = randn(1,1000);
 theoretical_mean = 0;
 theoretical_std = 1;
 
-% Q5.1 mean
-
+% % Q5.1 mean
+% 
 % measured_mean = mean(x)
 % percentage_error_mean = abs((theoretical_mean - measured_mean) * 100 / theoretical_mean)
-
-% Q5.2 std
-
+% 
+% % Q5.2 std
+% 
 % measured_std = std(x)
 % percentage_error_std = abs((theoretical_std - measured_std) * 100 / theoretical_std)
 
@@ -268,12 +270,12 @@ theoretical_std = 1;
 
 x10 = randn(10, 1000);
 
-measured_means = mean(x10')% it collapses the first number in the dimension
-bias_means = measured_means - theoretical_mean;
+measured_means = mean(x10'); 
+bias_means = measured_means - theoretical_mean
 
-measured_stds = std(x10')
-bias_stds =  measured_stds - theoretical_std;
-
+measured_stds = std(x10');
+bias_stds =  measured_stds - theoretical_std
+%%
 figure;
 scatter(measured_means, zeros(length(measured_means), 1), 'o') % Measured means on x-axis
 hold on;

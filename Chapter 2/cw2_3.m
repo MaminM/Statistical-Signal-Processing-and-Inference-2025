@@ -203,54 +203,43 @@ fontsize(fnt, 'points')
 clc
 clear all
 close all
-
 load sunspot.dat % 288x2 ( year, number of sunspots ) 
-
 % ACF
 sunspot_data = sunspot(:, 2);
 years = sunspot(:, 1);
 sunspot_ACF = xcorr(sunspot_data, 'unbiased');
-
-% lag of 5, 20 and 250
-lengths = [5, 20, 250];
-
-for i=1:length(lengths)
-    
-    L = lengths(i);
-    tau = -L:L;
-    ACF = sunspot_ACF(-L+289:L+289);
-    
-    figure;
-    plot(tau, ACF)
-    xlabel('tau')
-    ylabel('ACF of sunspot data')
-    title(['Length = ,', int2str(L)])
-
-end
-
 % ZERO MEAN ACF
-
 sunspot_data_zero_mean = sunspot_data - mean(sunspot_data);
 sunspot_data_zero_mean_ACF = xcorr(sunspot_data_zero_mean, 'unbiased');
 
 % lag of 5, 20 and 250
 lengths = [5, 20, 250];
-w
+
+figure; % Create a single figure
 for i=1:length(lengths)
     
     L = lengths(i);
     tau = -L:L;
-    ACF = sunspot_data_zero_mean_ACF(-L+289:L+289);
     
-    figure;
-    plot(tau, ACF)
-    xlabel('tau')
-    ylabel('ACF of sunspot data')
-    title(['ZERO MEAN | Length = ,', int2str(L)])
-
+    % Original Data Plot (Column 1)
+    subplot(3, 2, 2*i - 1); % 3 rows, 2 columns, positions 1, 3, 5
+    L = L
+    ACF = sunspot_ACF(-L+289:L+289);
+    L1 = length(ACF)
+    Lt = length(tau)
+    stem(tau, ACF);
+    xlabel('tau');
+    ylabel('ACF of sunspot data');
+    title(['Length = ', int2str(L)]);
+    
+    % Zero-Mean Data Plot (Column 2)
+    subplot(3, 2, 2*i); % 3 rows, 2 columns, positions 2, 4, 6
+    ACF_zero_mean = sunspot_data_zero_mean_ACF(-L+289:L+289);
+    stem(tau, ACF_zero_mean);
+    xlabel('tau');
+    ylabel('ACF of zero-mean sunspot data');
+    title(['ZERO MEAN | Length = ', int2str(L)]);
 end
-
-
 
 %% Question 3 
 clear all
