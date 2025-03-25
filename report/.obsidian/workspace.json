@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "3e8e9e032e070113",
+        "id": "849fa0637a596f1e",
         "type": "tabs",
         "children": [
           {
-            "id": "fb8bfc6c2eaae684",
+            "id": "d17e85620380f810",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -169,21 +169,24 @@
       "command-palette:Open command palette": false
     }
   },
-  "active": "fb8bfc6c2eaae684",
+  "active": "d17e85620380f810",
   "lastOpenFiles": [
-    "part_3_2_2.svg",
-    "part_3_2_3.svg",
-    "part_3_2_q1.svg",
-    "Important Facts I forget.md",
-    "part_3_1_3.svg",
+    "part_4_5_q1.svg",
+    "part_4_6_b.svg",
+    "part_4_6_a.svg",
+    "part_4_6.svg",
+    "part_4_4.svg",
+    "part_4_3.svg",
+    "part_4_3.png",
+    "part_4_2_q2_b.svg",
+    "part_4_2_q2.svg",
+    "part_4_1_q1.svg",
+    "part_3_4_q4.svg",
+    "par_3_.md",
     "Report.md",
-    "part_3_1_3_a.svg",
-    "part_3_1_3_b.svg",
-    "part_3_3_c.svg",
-    "part_3_2.svg",
-    "part_3_1_smooth_pgm.svg",
-    "part_3_1_pgm.svg",
-    "part_2_5_trial3.png",
+    "part_3_1.md",
+    "part_3_1_2.fig",
+    "Important Facts I forget.md",
     "Welcome.md"
   ]
 }

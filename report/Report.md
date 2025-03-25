@@ -269,6 +269,8 @@ theoretical_convergence = all(abs(z) < 1);
 
 ![[part_2_3.png]]
 
+
+
 ==Derivation is in the slides==
 
 ![[Pasted image 20250320092131.png | 300]]
@@ -285,7 +287,7 @@ $N=250$, the ACF reveals it's true pattern
 
 ### Question 3 - Yule-Walker Equations
 
-The figure below clearly indicated 
+The figure below clearly indicated ...
 
 ![[Pasted image 20250320092402.png | 500]]
 
@@ -480,8 +482,10 @@ Smoothing approximates the function, retaining important trends while removing n
 Visually, the smoothed periodogram shows lower variance and thus appears to be a better estimate.
 
 ### Question 2
+Non-overlapping segments of WGN are random, and completely uncorrelated. There is no pattern between each plot and this is due to the variance of the data.
+Each segment is an unreliable estimate for the ideal PSD.
 
-![[part_3_2.svg]]
+![[part_3_1_q2.svg]]
 
 ### Question 3
 
@@ -502,10 +506,338 @@ The periodogram has some error, this is expected as the estimate is based on a f
 
 ### Question 3
 
-...unsure
-
+Zooming into the periodogram's PSD at $f = [0.4, 0.5]$ reveals significant oscillations due to the inherent rectangular windowing. This window's side lobes, equivalent to sinc function convolution $F_{rect}\left(\frac{t}{a}\right)(f) = a \cdot \text{sinc}(af)$, minimally impact low frequencies but distort higher frequencies, like those in $[0.4, 0.5]$, by spectral leakage. Applying a Hamming window, which reduces side lobes, would mitigate these oscillations, improving PSD accuracy.
 
 ### Question 4
 
+Compared to the periodogram, the model based estimate for the PSD (in magenta) is a lot more accurate. In particular, the variance of the estimate is a lot lower. 
+![[part_3_2_q4.svg]]
 ### Question 5
 
+The results support our earlier conclusion that the optimal model order is AR(2).
+Low model order can only have one peak, hence it is inflexible in the spectral domain and the accuracy is poor.
+High model order causes too many peaks.
+![[part_3_2_q5.svg]]
+Comparing the PSD estimates using mean squared error gives the following results
+- order 1, $MSE = 4.06\times 10^7$
+- order 2, $MSE = 4.27\times 10^7$
+- order 10, $MSE = 9.51\times 10^7$
+Hence, clearly shown that over-modelling hurts performance.
+
+## 3.3 The Least Squares Estimation of AR Coefficients
+
+### Question 1
+
+An autoregressive moving average (ARMA) model assumes a power spectral density (PSD) of:
+
+$$
+P_{xx} (f ) = \frac{\sigma^2_u |B(f)|^2}{|A(f)|^2}
+$$
+
+where
+
+$$
+B(f) = 1 + \sum_{k=1}^{q} b[k] e^{j2\pi f k}
+$$
+
+$$
+A(f) = 1 + \sum_{k=1}^{p} a[k] e^{j2\pi f k}
+$$
+
+Here, the $b[k]$ terms are the MA filter parameters, and the $a[k]$ terms are the AR filter parameters. The LSE approach only focuses on the AR parameters. We now take the inverse $z$-transform of the PSD to find the autocorrelation function (ACF):
+
+$$
+P_{xx} (z) = \frac{\sigma^2 B(z)B(z^{-1})}{A(z)A(z^{-1})}
+$$
+
+where $B(f) = B(e^{j2\pi f})$ and $A(f) = A(e^{j2\pi f})$.
+
+$$
+\mathcal{Z}^{-1} [A(z) P_{xx} (z)] = \mathcal{Z}^{-1} \left[ \sigma^2 \frac{B(z^{-1})}{A(z)} \right]
+$$
+
+Since the filter impulse response is causal,
+
+$$
+h[n] = \mathcal{Z}^{-1} \left[ \frac{B(z)}{A(z)} \right] = 0, \quad \text{for } n < 0
+$$
+
+and
+
+$$
+h[n] = \mathcal{Z}^{-1} \left[ \frac{B(z^{-1})}{A(z^{-1})} \right] = 0, \quad \text{for } n > 0
+$$
+
+Thus, the system is anticausal, and we have:
+
+$$
+\mathcal{Z}^{-1} \left[ \sigma^2 B(z) B(z^{-1}) A(z^{-1}) \right] = \sigma^2 b[n] * h[n]
+$$
+
+$$
+\mathcal{Z}^{-1} \left[ \sigma^2 B(z) B(z^{-1}) A(z^{-1}) \right] =
+\begin{cases} 
+\sigma^2 b[n] * h[n], & n \leq q \\
+0, & n > q
+\end{cases}
+$$
+
+$$
+\mathcal{Z}^{-1} \left[ A(z) P_{xx} (z) \right] = \mathcal{Z}^{-1} \left[ \sigma^2 B(z) B(z^{-1}) A(z^{-1}) \right] = 0, \quad \text{for } n > q
+$$
+
+The difference equation of the ACF for $n > q$ can now be written as:
+
+$$
+\sum_{k=0}^{p} a[k] r_{xx} [n - k] = 0, \quad \text{for } n > q
+$$
+
+where $a[0] = 1$. These equations are known as the **modified Yule-Walker equations** since they are identical to the original Yule-Walker equations except for the fact that they hold for $n > 0$. Assuming $x[n]$ is available from $0,1,\dots,(N-1)$, and the ACF is estimated for lags $n = 0,1,\dots,M$, where $M \leq N - 1$, then the LSE of $a[k]$ will minimize:
+
+$$
+J = \sum_{n=q+1}^{M} \left[ \hat{r}_{xx} [n] - \sum_{k=1}^{p} a[k] \hat{r}_{xx} [n - k] \right]^2
+$$
+
+which can be written in matrix form as:
+
+$$
+J = (x - H \theta)^T (x - H \theta)
+$$
+
+where
+
+$$
+x =
+\begin{bmatrix}
+\hat{r}_{xx} [q + 1] \\
+\hat{r}_{xx} [q + 2] \\
+\vdots \\
+\hat{r}_{xx} [M]
+\end{bmatrix}
+$$
+
+$$
+\theta =
+\begin{bmatrix}
+a[1] \\
+a[2] \\
+\vdots \\
+a[p]
+\end{bmatrix}
+$$
+
+$$
+H =
+\begin{bmatrix}
+\hat{r}_{xx} [q] & \hat{r}_{xx} [q - 1] & \cdots & \hat{r}_{xx} [q - p + 1] \\
+\hat{r}_{xx} [q + 1] & \hat{r}_{xx} [q] & \cdots & \hat{r}_{xx} [q - p + 2] \\
+\vdots & \vdots & \ddots & \vdots \\
+\hat{r}_{xx} [M] & \hat{r}_{xx} [M - 1] & \cdots & \hat{r}_{xx} [M - p]
+\end{bmatrix}
+$$
+
+### Question 2
+
+The least squares estimate is given by, $\hat a=(H^TH)^{−1}H^Tx$.
+
+This is known as the least squares modified Yule-Walker equation, where LSE is applied to estimated ACF values instead of actual data.
+
+While $H$ is typically deterministic, here it becomes random due to finite-sample ACF estimation. This randomness increases for larger $M$, as ACF estimates at higher lags suffer from greater variance due to averaging over fewer terms.
+### Question 3
+
+The following table shows the coefficients for model orders up to 10.
+
+| No.   | 1       | 2       | 3       | 4       | 5       | 6       | 7       | 8       | 9       | 10      | 11      | MSE     |
+| :---- | :------ | :------ | :------ | :------ | :------ | :------ | :------ | :------ | :------ | :------ | :------ | :------ |
+| AR(1) | 0.8219  | -       | -       | -       | -       | -       | -       | -       | -       | -       | -       | 496.8   |
+| AR(2) | 1.3864  | -0.6853 | -       | -       | -       | -       | -       | -       | -       | -       | -       | 263.3   |
+| AR(3) | 1.3076  | -0.5272 | -0.1145 | -       | -       | -       | -       | -       | -       | -       | -       | 259.5   |
+| AR(4) | 1.3126  | -0.4989 | -0.1833 | 0.0515  | -       | -       | -       | -       | -       | -       | -       | 258.6   |
+| AR(5) | 1.3135  | -0.5020 | -0.1918 | 0.0740  | -0.0171 | -       | -       | -       | -       | -       | -       | 258.5   |
+| AR(6) | 1.3172  | -0.5140 | -0.1613 | 0.1574  | -0.2342 | 0.1665  | -       | -       | -       | -       | -       | 251.2   |
+| AR(7) | 1.2876  | -0.4702 | -0.1972 | 0.1918  | -0.1211 | -0.1194 | 0.2123  | -       | -       | -       | -       | 234.8   |
+| AR(8) | 1.2412  | -0.4468 | -0.1669 | 0.1492  | -0.0798 | -0.0101 | -0.0841 | 0.2331  | -       | -       | -       | 222.1   |
+| AR(9) | 1.1936  | -0.4310 | -0.1628 | 0.1660  | -0.1127 | 0.0243  | 0.0067  | -0.0211 | 0.2085  | -       | -       | 212.6   |
+| AR(10)| 1.1883  | -0.4298 | -0.1654 | 0.1683  | -0.1110 | 0.0191  | 0.0112  | -0.0105 | 0.1787  | 0.0249  | 212.4   |
+
+### Question 4
+Model order 10 has the lowest mean squared error. However, we know that lower model orders are more favourable for generalisability.
+Given that model order 2 has a close enough error with significantly less computational complexity, we once again choose model AR(2) at the optimal.
+![[cw_3_3_q4.svg]]
+
+### Question 5
+
+The LSE approach provides a good estimate of the Yule-Walker method, sharing the same pole location at $0.1 \text{ Hz}$
+![[part_3_3_q5.svg]]
+### Question 6
+The minimum is found at $N=25$ and the maximum is found at $N=100$. 
+The MSE plateaus for $N>150$, implying that increase in data length will not improve performance. This implies that the AR(2) model has 'reached the limit' of what it can capture.
+
+There we suggest that 25 as the optimal data length for the AR(2) modelling of sunspot time series data.
+
+![[part_3_3_q6.svg]]
+
+## 3.4 Spectrogram for time-frequency analysis: dial tone pad
+
+**Phone number used for analysis is  02018211092**
+### Question 1
+The Nyquist frquency must be $2\times 1477 = 2954 \text{ Hz}$.
+Oversampling with a frequency of $32768 \text{ Hz}$ will boost SNR. The sampling frequency is also a direct power of 2, $2^{15} = 32768$, which will make the FFT computationally efficient, for example during the bit-reversal permutation.
+![[part_3_4_q1.svg]]
+### Question 2
+
+The spectogram clearly shows peaks in power at discrete frequencies for each digit being pressed. 
+The two horizontal bars per tone accurately captures the DTMF system.
+Without noise, the idle time has zero power, which is reflected in the uniformity of the dark blue.
+
+The Hanning window's side lobes cause spectral spreading in the spectrogram. Using a finite 8192-sample window, derived from a 0.25-second key duration at 32768 samples per second, shifts peak frequencies from their ideal values. This displacement, influenced by the window length, is a limitation of the Discrete Fourier Transform and the time-frequency uncertainty principle
+
+![[part_3_4_q2.svg]]
+![[part_3_4_q2_fft.svg]]
+
+### Question 3
+
+DTMF digit identification leverages the distinct frequency pairs within each 8192-sample block. By establishing tolerance bands (e.g., $\pm 30 \text{ Hz}$) around the standard DTMF frequencies ($697 \text{ Hz}$ to $1477 \text{ Hz}$), we accurately determine the pressed key, as no frequency components fall outside the $675 \text{ Hz}$ to $1500 \text{ Hz}$ range. Spectrogram analysis further confirms this, where yellow dashes correspond to the expected normalized frequencies (e.g., $0.0574\pi$ and $0.0834\pi$ radians per sample for digit '0'), validating the frequency-based detection.
+
+### Question 4
+
+Low, medium and high noise is introduced with variances, $\sigma_N^2$, of $0.05, 1$ and $5$.
+Analytically, the PSD should be offset by a DC level for all frequencies. This is because the Fourier Transform is a linear transform and therefore the resulting noisy PSD = ideal PSD + PSD of noise.
+
+The PSD of WGN is ideally a flat line with amplitude $\sigma_N^2$, therefore the noisy PSD should be an offset from the original PSD. Since the FFT plot is in decibels, a constant increase in power across all frequencies from the added white noise will appear as a proportionally larger increase in the dB value of originally low-amplitude frequencies compared to those with high initial amplitudes. Consequently, as the noise power increases, the noise floor and the signal peaks will tend towards a similar dB level, effectively reducing the signal-to-noise ratio.
+
+![[part_3_4_q4.svg]]
+
+
+## 3.5 Real world signals: Respiratory sinus arrhythmia form RR-Intervals
+
+
+==Problem generating the periodograms==
+Code is basically done, just data is fucked
+
+
+# Part 4: Optimal Filtering - fixed and adaptive
+
+## 3.1 Wiener Filter
+![[part_4_1_q1.svg]]
+### Question 1
+
+The given filter coefficients for the unknown system are $b = [1 \ 2 \ 3 \ 2 \ 1]$. The ideal SNR using normalized data is:
+
+$$SNR = \frac{\sigma_{y[n]}^2}{\sigma_{\eta[n]}^2} = \frac{1}{0.1^2} = 100 = 20 \text{ dB}$$
+
+We use $R_{xx}$ and $p_{zx}$ to find the optimal weight coefficients $w_{opt} = R_{xx}^{-1} \cdot p_{zx}$. The normalized optimal coefficients for noise with standard deviation of $0.1$ are $w_{opt} = [0.2351 \ 0.4629 \ 0.6964 \ 0.4628 \ 0.2335]$. While normalizing the filter output ensures power matching between the input and output, it scales the data. Hence the coefficients do not resemble those of the given unknown system.
+
+Without normalization, the coefficients are $w = [0.9479 \ 1.9333 \ 2.9437 \ 1.9330 \ 0.9411]$, which resemble the given coefficients. The SNR is $20.2 \text{ dB}$. Increasing the sample size and/or decreasing the noise variance give a better estimate of the coefficients.
+
+### Question 2
+With noise variance ranging from 0.1 to 10 (standard deviation 0.01 to 3.16), coefficient estimation accuracy and SNR decrease as variance increases (Table 1). Increasing the filter order beyond 5 yields near-zero extra coefficients. Higher noise variance further deviates these coefficients from zero.
+
+| SD   | w1     | w2     | w3     | w4     | w5     | SNR (dB) |
+| ---- | ------ | ------ | ------ | ------ | ------ | -------- |
+| 0.01 | 0.9995 | 2.0020 | 3.0045 | 2.0077 | 1.0029 | 53.3791  |
+| 0.1  | 1.0025 | 2.0030 | 3.0065 | 2.0098 | 1.0001 | 32.6505  |
+| 0.5  | 0.9809 | 1.9969 | 3.0013 | 2.0290 | 1.0137 | 19.3272  |
+| 1.4  | 1.0091 | 2.0935 | 3.0062 | 2.0244 | 0.9721 | 9.1208   |
+| 2.5  | 1.0130 | 2.0269 | 2.9294 | 2.0924 | 1.1046 | 5.3107   |
+| 3.1  | 0.8381 | 1.8543 | 2.8922 | 2.0316 | 1.1164 | 2.5721   |
+### Question 3
+The Wiener solution's computational complexity arises from several steps. We can estimate the number of multiplications and additions as follows:
+
+| Operation                                          | Multiplications/Additions  | Complexity                               |
+| -------------------------------------------------- | -------------------------- | ---------------------------------------- |
+| Autocorrelation ($R_{xx}$)                         | $N^2$                      | $O(N^2)$ or $O(N N_w)$ if $N \gg N_w$    |
+| Cross-correlation ($p_{zx}$)                       | $N(q+1)$ or $N(N_w + 1)$   | $O(N(q+1))$ or $O(N N_w)$ if $N \gg N_w$ |
+| Matrix Inversion ($R_{xx}^{-1}$)                   | $O(N^3)$                   | $O(N^3)$ or $O(N_w^3)$ if $N_w \gg 1$    |
+| Matrix Multiplication ($R_{xx}^{-1} \cdot p_{zx}$) | $(q+1)^2$ or $(N_w + 1)^2$ | $(q+1)^2$ or $(N_w + 1)^2$               |
+
+Here, $N$ is the signal length, $q$ is the filter order, and $N_w$ is the Wiener filter order. The dominant complexity is from matrix inversion, $O(N^3)$ or $O(N_w^3)$, especially for large $N_w$.
+
+
+## 3.2 The least mean square (LMS) algorithm
+
+### Question 1
+Apply LMS algorithm on calculating Wiener coefficients. Use same input and filter order as in part 1, but adaptive gain $\mu$ to be 0.01. Solved for $w_{opt} = [1.0025, 2.0037, 3.0153, 1.9985, 1.0014]^T$, which are again, close to the correct values.
+### Question 2
+
+![[part_4_2_q2.svg]]
+![[part_4_2_q2_b.svg]]The optimum learning rate $\mu$ would be 0.01 under which $w_{opt}$ converges to a stable constant, close to the correct filter coefficients $[1, 2, 3, 2, 1]^T$ meanwhile the estimation error reduces to zero.
+
+Decreasing $\mu$ lead to very slow convergence as $w_{opt}$ does not settle in a constant value after 1000 iterations. The trajectory traced by $w_{opt}$ for number of iterations tends to be monotonic increasing. Error is still larger than zero after 1000 iterations.
+
+Increasing $\mu$ has the opposite effect, leading to oscillating $w_{opt}$, this is because the step size for updating $w$ is too large that it does not converge to local or global minima.
+
+### Question 3
+
+The LMS algorithm utilizes instantaneous estimates of the autocorrelation function $\hat{r}_x(j, x)$ and the cross-correlation function $\hat{r}_{yx}(k)$. Substituting these into the steepest gradient descent equation yields:
+$$w(n + 1) = w(n) + \mu e(n) x(n)$$
+Given that:
+$$\hat{y}(n) = w^T(n) x(n) = \sum_{i=0}^{M} w_i(n) x(n - i)$$
+$$e(n) = z(n) - \hat{y}(n)$$
+
+where $w(n)$ and $x(n)$ are column vectors of length $(M+1)$. The computational complexity for each iteration is summarized in the following table:
+
+| Operation | Multiplications | Additions |
+|---|---|---|
+| $\hat{y}(n)$ | $M + 1$ | $M + 1$ |
+| $e(n)$ | $1$ | $1$ |
+| $w(n+1)$ update | $M + 2$ | $M + 1$ |
+| **Total** | **$2M + 3$** | **$2(M+1)$** |
+
+
+## 4.3 Gear shifting
+The standard LMS algorithm's sensitivity to input scaling presents a challenge in selecting a stable learning rate $\mu$. As previously discussed, a high adaptive gain leads to fast convergence, while a low gain provides better steady-state accuracy. Gear shifting addresses this by dynamically adjusting the gain: increasing it for large errors and decreasing it for small errors. This approach leverages the benefits of both high and low gains, leading to significantly faster convergence, as demonstrated with $\mu = 1.0$.
+
+A common implementation of this adaptive gain policy is the Normalized Least Mean Squares (NLMS) algorithm, which updates the weights according to:
+
+$$w(n + 1) = w(n) + \mu \frac{e(n) x(n)}{\sigma + ||x(n)||^2 + \epsilon}$$
+
+where $\sigma$ and $\epsilon$ are small constants to prevent division by zero. This normalization ensures stability and improves convergence compared to the fixed-gain LMS, especially when the input signal's power varies significantly.
+
+![[part_4_3.svg]]
+
+
+## 4.4 Identification of AR processes
+
+### Question 1
+Since the given system is an AR(2) process, the LMS algorithm needs to estimate $a_1$ and $a_2$. Figure 4b shows that the coefficients converge to -0.2 and -0.9. This is because the filter output is defined by:
+$$y(n) = \sum_{i=0}^{M} b_i x(n-i) - \sum_{j=0}^{N} a_j x(n-j) = 0.9x(n-1) - 0.2x(n-2)$$
+### Question 2
+The plots in Figure 4 have been extended to 3000 samples so that the convergence is clear. The convergence is too slow for $\mu = 0.001$ and the estimate is too distorted for $\mu = 0.05$. There is a good balance between accuracy and speed of convergence at $\mu = 0.01$.
+
+![[part_4_4.svg]]
+
+## 4.5 Speech recognition
+
+### Question 1
+
+Information theoretic criterion, namely MDL and AIC, are used to determine optimal order of the predictor. The results are shown in the table below.
+
+| Order | e   | a   | s   | t   | x   |
+| ----- | --- | --- | --- | --- | --- |
+| MDL   | 13  | 34  | 36  | 14  | 21  |
+| AIC   | 13  | 34  | 49  | 15  | 21  |
+
+The calculations in the figure below use 100 samples, adaptation gain of 0.01, and a filter order of 10. Low gain and high order is an intentional choice to ensure accuracy. Given that the speech signal is non stationary, gear shifting is not recommended and introduce errors in the estimates.
+Increasing the adaptation gain past 0.5 causes divergence of estimates.
+
+![[part_4_5_q1.svg]]
+
+### Question 3
+==Not done==
+...
+
+
+
+
+## 4.6 Dealing with computational complexity: sign algorithms
+
+The figure below shows that while the signed LMS converges to the known values ($\text{a1}=-0.2$ and $\text{a2}  = -0.9$) faster than standard LMS at the expensive of more oscillations at convergence. 
+The convergence of the signed-error algorithm is the sharpest. Both the sign-sign and signed regressor is the slowest to converge but both show lower variance then signed error. 
+
+![[part_4_6_b.svg]]
+As shown in the figure below, signed error and signed regressor have close convergence rates. Sign-sign algorithm does not converge. We can conclude that, generally, signed error has the best accuracy and convergence performance.
+
+The figure shows the performance on the audio for letter "a".
+![[part_4_6.svg]]
+# Part 5: MLE for the Frequency of a Signal
